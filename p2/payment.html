@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Gateway | Print SAGA</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(255,255,255,0.1);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      width: 320px;
+      margin: auto;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    button {
+      background: white;
+      color: #2a5298;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      transform: scale(1.1);
+      background: #ffcc00;
+      color: black;
+    }
+    img {
+      width: 180px;
+      height: 180px;
+      border-radius: 15px;
+      margin: 15px auto;
+      border: 2px solid white;
+      
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Relief Fund 💡</h1>
+    <p>Scan the QR or click below to make a secure payment.</p>
+
+    <!-- QR Code (visible only on desktop if needed) -->
+    <img id="qr" src="qr.jpg" alt="Scan to Pay">
+
+    <!-- Payment Buttons -->
+    <button onclick="pay('googlepay')">Pay with Google Pay</button>
+    <button onclick="pay('phonepe')">Pay with PhonePe</button>
+    <button onclick="pay('paytm')">Pay with Paytm</button>
+  </div>
+
+  <script>
+    function pay(platform) {
+      const isMobile = /Android|iPhone/i.test(navigator.userAgent);
+      const upiLinks = {
+        googlepay: 'upi://pay?pa=garvit.dumir1103@oksbi&pn=PrintSAGA&cu=INR',
+        phonepe: 'upi://pay?pa=7728825533@axl&pn=PrintSAGA&cu=INR',
+        paytm: 'upi://pay?pa=7728825533@paytm&pn=PrintSAGA&cu=INR'
+      };
+
+      const webLinks = {
+        googlepay: 'https://pay.google.com/about/',      // Google Pay website
+        phonepe: 'https://www.phonepe.com/',              // PhonePe website
+        paytm: 'https://paytm.com/'                        // Paytm website
+      };
+
+      if (isMobile) {
+        // Mobile: open UPI link
+        window.location.href = upiLinks[platform];
+      } else {
+        // Desktop: open official payment platform website in new tab
+        window.open(webLinks[platform], '_blank');
+
+        // Optionally show QR code for desktop user to scan manually
+        document.getElementById('qr').style.display = 'block';
+        alert('📱 You can also scan this QR code with your UPI app to complete the payment.');
+      }
+    }
+  </script>
+
+</body>
+</html>

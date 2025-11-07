@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earthquake Emergency Assistance Packs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'wiggle': 'wiggle 1s ease-in-out infinite',
+            'bounce-slow': 'bounce 3s infinite',
+            'spin-slow': 'spin 3s linear infinite',
+            'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
+          },
+          keyframes: {
+            'wiggle': {
+              '0%, 100%': { transform: 'rotate(-3deg)' },
+              '50%': { transform: 'rotate(3deg)' },
+            },
+            'fade-in-up': {
+              '0%': { opacity: 0, transform: 'translateY(20px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .hover\:rotate-z-1:hover {
+      transform: rotateZ(0.5deg) scale(1.03);
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white font-sans ">
+
+  <div class="p-6 md:p-12 min-h-screen">
+
+    <header class="text-center mb-16 md:mb-24 relative">
+      <div class="absolute inset-0 z-0 opacity-10 blur-3xl transform -translate-y-1/2"
+        style="background-image: radial-gradient(circle at center, #ef4444, transparent 70%);">
+      </div>
+      <h2
+        class="text-6xl sm:text-7xl font-extrabold tracking-tighter relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-orange-400 to-yellow-500 pb-2">
+        <span class="inline-block hover:scale-[1.02] transition-transform duration-300">
+          EARTHQUAKE 
+        </span>
+      </h2>
+      <p class="mt-4 text-xl md:text-2xl text-gray-200 font-light relative z-10">
+       SERVICES WE PROVIDE
+      </p>
+    </header>
+
+    <div class="grid gap-10 lg:grid-cols-3 md:grid-cols-2 max-w-7xl mx-auto">
+
+      
+      <div
+        class="group relative bg-gray-800 rounded-3xl shadow-2xl p-8 border-t-8 border-t-red-500 transform transition-all duration-700 ease-out hover:shadow-red-700/80 hover:scale-[1.03] hover:rotate-z-1 hover:border-t-red-400 animate-fade-in-up"
+        style="animation-delay: 0s;">
+        <div
+          class="absolute inset-0 rounded-3xl border border-red-500 opacity-0 transition-opacity duration-500 group-hover:opacity-20">
+        </div>
+
+        <div class="flex items-start mb-6">
+          <span class="text-6xl text-red-400 mr-4 group-hover:animate-wiggle">🚨</span>
+          <div>
+            <h3 class="text-3xl font-black uppercase tracking-wider">Rapid Response Pack</h3>
+            <p class="text-sm text-red-400 mt-2 font-bold tracking-[0.2em]">LIFE-SAVING INTERVENTION</p>
+          </div>
+        </div>
+
+        <ul class="space-y-5 text-gray-300 list-none pl-0">
+          <li class="flex items-start hover:text-red-200 transition-colors">
+            <span class="text-red-500 mr-3 text-xl">🚑</span>
+            <span><b>On-Ground Rescue:</b> Emergency response teams dispatched to trapped locations.</span>
+          </li>
+          <li class="flex items-start hover:text-red-200 transition-colors">
+            <span class="text-red-500 mr-3 text-xl">🩺</span>
+            <span><b>Medical First Aid:</b> Field paramedics with mobile triage support.</span>
+          </li>
+          <li class="flex items-start hover:text-red-200 transition-colors">
+            <span class="text-red-500 mr-3 text-xl">📡</span>
+            <span><b>Communication Line:</b> Direct satellite connection for survivors.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- RESCUE & RELIEF PACK -->
+      <div
+        class="group relative bg-gray-800 rounded-3xl shadow-2xl p-8 border-t-8 border-t-amber-400 transform transition-all duration-700 ease-out hover:shadow-amber-700/80 hover:scale-[1.03] hover:rotate-z-1 hover:border-t-amber-300 animate-fade-in-up"
+        style="animation-delay: 0.15s;">
+        <div
+          class="absolute inset-0 rounded-3xl border border-amber-400 opacity-0 transition-opacity duration-500 group-hover:opacity-20">
+        </div>
+
+        <div class="flex items-start mb-6">
+          <span class="text-6xl text-amber-400 mr-4 group-hover:animate-bounce-slow">⛺</span>
+          <div>
+            <h3 class="text-3xl font-black uppercase tracking-wider">Rescue & Relief Pack</h3>
+            <p class="text-sm text-amber-400 mt-2 font-bold tracking-[0.2em]">SHELTER & HUMANITARIAN SUPPORT</p>
+          </div>
+        </div>
+
+        <ul class="space-y-5 text-gray-300 list-none pl-0">
+          <li class="flex items-start hover:text-amber-200 transition-colors">
+            <span class="text-amber-400 mr-3 text-xl">🏕</span>
+            <span><b>Temporary Shelter:</b> Emergency tents and bedding assistance.</span>
+          </li>
+          <li class="flex items-start hover:text-amber-200 transition-colors">
+            <span class="text-amber-400 mr-3 text-xl">💧</span>
+            <span><b>WASH Facilities:</b> Clean water, sanitation & hygiene maintenance.</span>
+          </li>
+          <li class="flex items-start hover:text-amber-200 transition-colors">
+            <span class="text-amber-400 mr-3 text-xl">🍱</span>
+            <span><b>Essential Supplies:</b> Ready-to-eat food, medicines & daily kits.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- TOTAL RECOVERY PACK -->
+      <div
+        class="group relative bg-gray-800 rounded-3xl shadow-2xl p-8 border-t-8 border-t-indigo-500 transform transition-all duration-700 ease-out hover:shadow-indigo-700/80 hover:scale-[1.03] hover:rotate-z-1 hover:border-t-indigo-400 animate-fade-in-up"
+        style="animation-delay: 0.3s;">
+        <div
+          class="absolute inset-0 rounded-3xl border border-indigo-500 opacity-0 transition-opacity duration-500 group-hover:opacity-20">
+        </div>
+
+        <div class="flex items-start mb-6">
+          <span class="text-6xl text-indigo-400 mr-4 group-hover:animate-spin-slow">🏗</span>
+          <div>
+            <h3 class="text-3xl font-black uppercase tracking-wider">Total Recovery Pack</h3>
+            <p class="text-sm text-indigo-400 mt-2 font-bold tracking-[0.2em]">REBUILDING & REHABILITATION</p>
+          </div>
+        </div>
+
+        <ul class="space-y-5 text-gray-300 list-none pl-0">
+          <li class="flex items-start hover:text-indigo-200 transition-colors">
+            <span class="text-indigo-500 mr-3 text-xl">🧱</span>
+            <span><b>Structural Assessment:</b> Engineering evaluation for building safety.</span>
+          </li>
+          <li class="flex items-start hover:text-indigo-200 transition-colors">
+            <span class="text-indigo-500 mr-3 text-xl">🧠</span>
+            <span><b>Psychological Aid:</b> Trauma counseling and recovery sessions.</span>
+          </li>
+          <li class="flex items-start hover:text-indigo-200 transition-colors">
+            <span class="text-indigo-500 mr-3 text-xl">📋</span>
+            <span><b>Insurance & Claim Help:</b> Complete coordination with policy providers.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="text-center mt-20 pt-8 border-t border-gray-700/50 max-w-7xl mx-auto">
+      <p class="text-md text-gray-400 animate-pulse-slow">
+        Our Earthquake Assistance Packs deliver swift rescue, essential care, and long-term recovery — keeping you protected when the ground shakes.
+      </p>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Meghalaya— History & Recent Natural Disasters</title>
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  <style>
+    :root{--accent:#0b6b4f;--muted:#666}
+    body{font-family:Inter,system-ui,Segoe UI,Arial;line-height:1.6;margin:0;background:#f6f8fa;color:#111}
+    header{background:linear-gradient(90deg,var(--accent),#2b8fb0);color:#fff;padding:2rem}
+    .container{max-width:980px;margin:1.25rem auto;padding:1rem}
+    h1{margin:0 0 .25rem;font-size:1.75rem}
+    p.lead{opacity:.95;margin:.25rem 0 1rem}
+    .grid{display:grid;grid-template-columns:1fr;gap:1rem}
+    @media(min-width:900px){.grid{grid-template-columns:2fr 1fr}}
+    .card{background:#fff;padding:1rem;border-radius:12px;box-shadow:0 6px 18px rgba(12,18,30,.06)}
+    .history h2,.disasters h2{margin-top:0}
+    ul.events{list-style:none;padding:0;margin:0}
+    ul.events li{padding:.75rem;border-left:4px solid var(--accent);margin:.45rem 0;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:8px}
+    .meta{font-size:.9rem;color:var(--muted)}
+    footer{padding:1rem;text-align:center;color:var(--muted);font-size:.9rem}
+    .map{height:180px;background:linear-gradient(180deg,#dff3ec, #f3fbff);display:flex;align-items:center;justify-content:center;border-radius:8px;color:#145}
+    .cta{display:inline-block;margin-top:.5rem;padding:.5rem .8rem;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none}
+    .cta.secondary{background:#2b8fb0}
+    .megha{width: 60%;}
+    #aru-video{position: fixed;right: 0; bottom:0%;min-width: 100%;min-height:100%;z-index:-1}
+    .container{backdrop-filter: blur(8px);}
+  </style>
+</head>
+<body>
+    
+    <header  data-aos="fade-down" data-aos-duration=800>
+        <video autoplay muted loop id="aru-video">
+            <source src="north.mp4" type="video/mp4">
+
+        </video>
+        
+        <div class="container">
+        <h1 data-aos="fade-down" data-aos-duration=900 data-aos-delay=1000>Meghalaya — a short history & recent natural disasters</h1>
+        <p  data-aos="fade-down" data-aos-duration=950 data-aos-delay=1000 class="lead">A concise, single-page summary that introduces the state's history and lists recent natural hazards (floods, landslides, earthquakes). Used for awareness and light reporting.</p>
+        </div>
+    </header>
+
+    <main  data-aos="fade-down" data-aos-duration=1200 class="container grid">
+        <section  data-aos="fade-left" data-aos-duration=1400 class="card history">
+        <h2>Quick history of Meghalaya</h2>
+        <p class="meta">Location: Northeastern India — Eastern Himalayas</p>
+        <p> Meghalaya, meaning “abode of clouds,” it is home to the Khasi, Garo, and Jaintia tribes, known for their rich culture and matrilineal society.The state receives one of the world’s highest rainfalls, especially in Mawsynram and Cherrapunji.Frequent floods occur in the plains and low-lying areas like West Garo Hills.Landslides are common in hilly districts such as East Khasi Hills and Ri-Bhoi during monsoons.</p>
+        <p>Earthquakes occasionally strike due to Meghalaya’s location in Seismic Zone V.Deforestation and unplanned mining increase soil erosion and landslide risks.In 2024, heavy monsoon rains caused floods and road collapses in East Garo Hills and Shillong region.</p>
+        <a href="https://www.google.com/maps/place/Shillong,+Meghalaya/@25.5896865,91.8924371,12z/data=!3m1!4b1!4m6!3m5!1s0x37507e8f34bd207f:0x62482df7108f882b!8m2!3d25.5787726!4d91.8932535!16zL20vMDNjajZj?entry=ttu&g_ep=EgoyMDI1MTEwNC4xIKXMDSoASAFQAw%3D%3D"
+        style="display:flex;gap:.75rem;align-items:center;margin-top:2rem">
+            <img src="megha.jpg" alt="meghalaya" class="megha">
+            <div class="map" aria-hidden="true">📍Meghalaya</div>
+            <h3></h3>
+            </div>
+        </a>
+            
+        
+            <div>
+            <strong>Capital:</strong>Shillong <br>
+            <strong>Statehood:</strong> 1972
+            </div>
+        </div>
+        </section>
+
+        <aside  data-aos="fade-right" data-aos-duration=2000 data-aos-delay=1000 class="card disasters">
+        <h2>Recent natural disasters (summary)</h2>
+        <p class="meta">The list below highlights notable events in recent monsoon seasons and seismic activity.</p>
+        <ul class="events">
+            <li>
+            <strong>May 2025 — Monsoon flooding & landslides in multiple districts</strong>
+            <div class="meta">Heavy downpour in e.g., Ri Bhoi, East Khasi Hills, West Garo Hills led to floods in 86 villages across 10 districts; 6 deaths</div>
+            </li>
+            <li>
+            <strong> Feb 2025— Earthquake of magnitude ~4.1 in North Garo Hills</strong>
+            <div class="meta">  Epicentre at latitude 25.87 N, longitude 90.70 E, depth 5 km; tremors felt in Assam too.</div>
+            </li>
+            <li>
+            <strong> March 2025 - TEarthquake of magnitude ~4.0 in East Garo Hills</strong>
+            <div class="meta">Occurred at 13:03 IST, depth 5 km; no major damage reported.</div>
+            </li>
+            <li>
+            <strong> Jun 2024-Earthquake of magnitude ~3.3 in West Khasi Hills</strong>
+            <div class="meta">Epicentre at depth 5 km; part of a series of minor quakes in the region.</div>
+            </li>
+        </ul>
+        <a class="cta" href="#details">Read the timeline below</a>
+        </aside>
+
+        <section  data-aos="fade-down" data-aos-duration=2000 data-aos-delay=1000 class="card" id="details" style="grid-column:1/-1">
+        <h2  data-aos="fade-down" data-aos-duration=950 data-aos-delay=2000>Detailed timeline & preparedness tips</h2>
+        <ol>
+            <li><strong>May-June 2025 monsoon crisis</strong> — intense rains triggered flash floods across many districts, with landslides reported in as Thoubal . Relief operations and air-drops were used to help cut-off villages.</li>
+            <li><strong>Common impacts</strong> — damaged roads, washed-away bridges, destroyed crops, temporary sheltering in relief camps, and travel disruption along NH routes (including sections of NH-13 / BCT highway).</li>
+            <li><strong>Preparedness tips</strong> — keep an emergency bag (food, water, torch, first-aid), register with local disaster authorities, avoid river banks during heavy rain, and follow official evacuation orders.</li>
+            <li><strong>How you can help</strong> — support verified local relief funds/NGOs, donate through government-endorsed channels, or volunteer through district disaster management teams.</li>
+        </ol>
+        <div style="margin-top:1.5rem;text-align:center">
+            <a class="cta" href="payment.html" target="_blank">💚 Donate Now</a>
+            <a class="cta secondary" href="https://docs.google.com/forms/d/e/1FAIpQLSd5ZCwMF11RhYidrbn_W3ccpiuATcOzZBQtwdNlURu9ZNlZlg/viewform?usp=dialog" target="_blank">🙌 Become a Volunteer</a>
+        </div>
+        </section>
+
+        <footer class="card" style="grid-column:1/-1">
+        <p class="meta">ALL DONATIONS PROVIDED ARE GIVEN TO THE FAMILIES EFFECTED BY THE DISASTER.</p>
+        
+        </footer>
+
+    </main>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+</body>
+</html>

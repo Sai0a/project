@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Landslide Assistance Packs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'wiggle': 'wiggle 1s ease-in-out infinite',
+            'bounce-slow': 'bounce 3s infinite',
+            'spin-slow': 'spin 3s linear infinite',
+            'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
+          },
+          keyframes: {
+            'wiggle': {
+              '0%, 100%': { transform: 'rotate(-3deg)' },
+              '50%': { transform: 'rotate(3deg)' },
+            },
+            'fade-in-up': {
+              '0%': { opacity: 0, transform: 'translateY(20px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .hover\:rotate-z-1:hover {
+      transform: rotateZ(0.5deg) scale(1.03);
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white font-sans ">
+
+  <div class="p-6 md:p-12 min-h-screen">
+
+    <header class="text-center mb-16 md:mb-24 relative">
+      <div class="absolute inset-0 z-0 opacity-10 blur-3xl transform -translate-y-1/2"
+        style="background-image: radial-gradient(circle at center, #22c55e, transparent 70%);">
+      </div>
+      <h2
+        class="text-6xl sm:text-7xl font-extrabold tracking-tighter relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-lime-400 to-emerald-600 pb-2">
+        <span class="inline-block hover:scale-[1.02] transition-transform duration-300">
+          LANDSLIDE 
+        </span>
+      </h2>
+      <p class="mt-4 text-xl md:text-2xl text-gray-200 font-light relative z-10">
+        SERVICES WE PROVIDE 
+      </p>
+    </header>
+
+    <div class="grid gap-10 lg:grid-cols-3 md:grid-cols-2 max-w-7xl mx-auto">
+
+      <!-- BASIC SLIDE RESCUE -->
+      <div
+        class="group relative bg-gray-800 rounded-3xl shadow-2xl p-8 border-t-8 border-t-green-500 transform transition-all duration-700 ease-out hover:shadow-green-800/80 hover:scale-[1.03] hover:rotate-z-1 hover:border-t-green-400 animate-fade-in-up"
+        style="animation-delay: 0s;">
+        <div
+          class="absolute inset-0 rounded-3xl border border-green-500 opacity-0 transition-opacity duration-500 group-hover:opacity-20">
+        </div>
+
+        <div class="flex items-start mb-6">
+          <span class="text-6xl text-green-400 mr-4 group-hover:animate-wiggle">🏔</span>
+          <div>
+            <h3 class="text-3xl font-black uppercase tracking-wider">Basic Slide Rescue</h3>
+            <p class="text-sm text-green-400 mt-2 font-bold tracking-[0.2em]">EMERGENCY EVACUATION</p>
+          </div>
+        </div>
+
+        <ul class="space-y-5 text-gray-300 list-none pl-0">
+          <li class="flex items-start hover:text-green-200 transition-colors">
+            <span class="text-green-500 mr-3 text-xl">🚜</span>
+            <span><b>Ground Rescue:</b> Deployment of local rescue vehicles and responders.</span>
+          </li>
+          <li class="flex items-start hover:text-green-200 transition-colors">
+            <span class="text-green-500 mr-3 text-xl">📡</span>
+            <span><b>Emergency Tracking:</b> Real-time GPS support to locate trapped users.</span>
+          </li>
+          <li class="flex items-start hover:text-green-200 transition-colors">
+            <span class="text-green-500 mr-3 text-xl">📞</span>
+            <span><b>24/7 Rescue Line:</b> Direct communication with our field teams.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- GOLD STABILITY PACK -->
+      <div
+        class="group relative bg-gray-800 rounded-3xl shadow-2xl p-8 border-t-8 border-t-amber-500 transform transition-all duration-700 ease-out hover:shadow-amber-800/80 hover:scale-[1.03] hover:rotate-z-1 hover:border-t-amber-400 animate-fade-in-up"
+        style="animation-delay: 0.15s;">
+        <div
+          class="absolute inset-0 rounded-3xl border border-amber-500 opacity-0 transition-opacity duration-500 group-hover:opacity-20">
+        </div>
+
+        <div class="flex items-start mb-6">
+          <span class="text-6xl text-amber-400 mr-4 group-hover:animate-bounce-slow">⛑</span>
+          <div>
+            <h3 class="text-3xl font-black uppercase tracking-wider">Gold Stability Pack</h3>
+            <p class="text-sm text-amber-400 mt-2 font-bold tracking-[0.2em]">ENHANCED SUPPORT SERVICES</p>
+          </div>
+        </div>
+
+        <ul class="space-y-5 text-gray-300 list-none pl-0">
+          <li class="flex items-start hover:text-amber-200 transition-colors">
+            <span class="text-amber-500 mr-3 text-xl">🏥</span>
+            <span><b>Medical Response:</b> On-site triage units and first aid for injuries.</span>
+          </li>
+          <li class="flex items-start hover:text-amber-200 transition-colors">
+            <span class="text-amber-500 mr-3 text-xl">🥫</span>
+            <span><b>Essential Supplies:</b> Food, water, and blankets provided at relief points.</span>
+          </li>
+          <li class="flex items-start hover:text-amber-200 transition-colors">
+            <span class="text-amber-500 mr-3 text-xl">🧰</span>
+            <span><b>Stabilization Gear:</b> Temporary slope reinforcement and access clearing.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ELITE RECOVERY PACK -->
+      <div
+        class="group relative bg-gray-800 rounded-3xl shadow-2xl p-8 border-t-8 border-t-indigo-500 transform transition-all duration-700 ease-out hover:shadow-indigo-800/80 hover:scale-[1.03] hover:rotate-z-1 hover:border-t-indigo-400 animate-fade-in-up"
+        style="animation-delay: 0.3s;">
+        <div
+          class="absolute inset-0 rounded-3xl border border-indigo-500 opacity-0 transition-opacity duration-500 group-hover:opacity-20">
+        </div>
+
+        <div class="flex items-start mb-6">
+          <span class="text-6xl text-indigo-400 mr-4 group-hover:animate-spin-slow">🚁</span>
+          <div>
+            <h3 class="text-3xl font-black uppercase tracking-wider">Elite Recovery Pack</h3>
+            <p class="text-sm text-indigo-400 mt-2 font-bold tracking-[0.2em]">FULL PREMIUM PROTECTION</p>
+          </div>
+        </div>
+
+        <ul class="space-y-5 text-gray-300 list-none pl-0">
+          <li class="flex items-start hover:text-indigo-200 transition-colors">
+            <span class="text-indigo-500 mr-3 text-xl">🚁</span>
+            <span><b>Aerial Rescue:</b> Helicopter support for remote or inaccessible regions.</span>
+          </li>
+          <li class="flex items-start hover:text-indigo-200 transition-colors">
+            <span class="text-indigo-500 mr-3 text-xl">🏨</span>
+            <span><b>Luxury Shelter:</b> Accommodation in safe partner facilities.</span>
+          </li>
+          <li class="flex items-start hover:text-indigo-200 transition-colors">
+            <span class="text-indigo-500 mr-3 text-xl">💼</span>
+            <span><b>Asset Recovery Aid:</b> Vehicle retrieval, documentation, and insurance support.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="text-center mt-20 pt-8 border-t border-gray-700/50 max-w-7xl mx-auto">
+      <p class="text-md text-gray-400 animate-pulse-slow">
+        With cutting-edge technology and trained response teams, our landslide packs ensure safety, relief, and peace of mind for premium users everywhere.
+      </p>
+    </div>
+  </div>
+
+</body>
+</html>

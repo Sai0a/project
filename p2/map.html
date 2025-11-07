@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Natural Disaster Preventer — Leaflet (Fixed)</title>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<!-- Leaflet Draw CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.css"/>
+
+<style>
+  :root{--primary:#0a4d8c;--accent:#28a745}
+  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;}
+  #app{display:flex;height:100vh;gap:0}
+  #sidebar{width:340px;padding:14px;box-sizing:border-box;background:#fff;border-right:1px solid #e6f0fa;overflow:auto}
+  #map{flex:1}
+  h1{margin:0 0 8px 0;font-size:1.05rem;color:var(--primary)}
+  .small{font-size:0.9rem;color:#555;margin-bottom:8px}
+  label{display:block;font-weight:600;margin-bottom:6px;color:var(--primary)}
+  input,textarea,select,button{width:100%;padding:8px;border-radius:8px;border:1px solid #dfeefc;box-sizing:border-box;margin-bottom:8px}
+  .row{display:flex;gap:8px}
+  .row>button{flex:1}
+  button.primary{background:var(--primary);color:#fff;border:none;cursor:pointer}
+  button.ghost{background:#fff;border:1px solid #dfeefc;color:var(--primary);cursor:pointer}
+  .list{max-height:160px;overflow:auto;background:#fbfeff;padding:8px;border-radius:8px;border:1px solid #eef6ff}
+  .item{padding:6px 8px;border-bottom:1px solid #eef6ff}
+  footer{padding:8px;text-align:center;font-size:0.85rem;color:#666}
+  .notice{background:#fff3cd;padding:8px;border-radius:6px;border:1px solid #ffeeba;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <h1>Natural Disaster Preventer</h1>
+    <div class="small">Leaflet demo — no API keys required. Draw hazard zones, add shelters & incidents, plan safe routes.</div>
+
+    <div class="notice">Click the map to <strong>select a start point</strong> (blue marker). Use "Plan Evacuation" to route to nearest safe shelter (OSRM).</div>
+
+    <label>My Location</label>
+    <div class="row">
+      <button id="btnLocate" class="primary">Center on Me</button>
+      <button id="btnClearAll" class="ghost">Clear All</button>
+    </div>
+    <div id="myInfo" class="small">—</div>
+
+    <label>Layers</label>
+    <div class="row">
+      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="chkHazard" checked/> Show Hazards</label>
+      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="chkShelter" checked/> Show Shelters</label>
+    </div>
+
+    <label>Shelters</label>
+    <input id="shelterName" placeholder="Shelter name (optional)"/>
+    <input id="shelterCap" placeholder="Capacity (optional)"/>
+    <div class="row">
+      <button id="btnAddShelter" class="primary">Add Shelter at Map Center</button>
+      <button id="btnExportShelters" class="ghost">Export CSV</button>
+    </div>
+    <div class="list" id="shelterList"></div>
+
+    <label>Hazard Zones</label>
+    <div class="row">
+      <button id="btnDrawHazard" class="primary">Draw Hazard Zone</button>
+      <button id="btnClearHazards" class="ghost">Clear Zones</button>
+    </div>
+
+    <label>Report Incident</label>
+    <input id="incidentTitle" placeholder="Title (e.g., Flooding)"/>
+    <textarea id="incidentDesc" rows="3" placeholder="Short description"></textarea>
+    <div class="row">
+      <button id="btnReport" class="primary">Report at Map Center</button>
+      <button id="btnExportIncidents" class="ghost">Export CSV</button>
+    </div>
+    <div class="list" id="incidentList"></div>
+
+    <label>Evacuation Planner</label>
+    <div class="small">Click map to pick a start point (blue). Then press Plan Evacuation to route to nearest shelter not in hazard zones.</div>
+    <div class="row">
+      <button id="btnPlanEvac" class="primary">Plan Evacuation</button>
+      <button id="btnClearRoute" class="ghost">Clear Route</button>
+    </div>
+
+    <footer>Uses OSRM public router for directions. For production, host your own router or use a commercial routing API.</footer>
+  </aside>
+
+  <div id="map"></div>
+</div>
+
+<!-- Libraries -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
+
+<script>
+/* -----------------------
+   Setup map and layers
+   ----------------------- */
+const map = L.map('map').setView([26.2, 92.5], 8);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OSM contributors' }).addTo(map);
+
+// Feature groups
+const hazardLayer = new L.FeatureGroup().addTo(map);
+const shelterLayer = new L.FeatureGroup().addTo(map);
+const incidentLayer = new L.FeatureGroup().addTo(map);
+const routeLayer = new L.FeatureGroup().addTo(map);
+
+// Draw control
+const drawControl = new L.Control.Draw({
+  draw: { polyline: false, circle: false, rectangle: false, marker: false, circlemarker: false, polygon: { allowIntersection: false, showArea: true } },
+  edit: { featureGroup: hazardLayer }
+});
+map.addControl(drawControl);
+
+/* -----------------------
+   State helpers
+   ----------------------- */
+let shelters = []; // {marker, name, cap}
+let incidents = []; // {marker, title, desc, ts}
+let hazards = []; // we maintain this for convenience, but the authoritative list is hazardLayer.getLayers()
+let selectedPoint = null; // marker
+let osrmBase = 'https://router.project-osrm.org/route/v1/driving'; // public demo
+
+/* -----------------------
+   Utilities
+   ----------------------- */
+function addShelterAt(latlng, name='', cap=''){
+  const m = L.marker(latlng, {icon: L.icon({iconUrl:'https://maps.google.com/mapfiles/ms/icons/green-dot.png',iconSize:[32,32]})}).addTo(shelterLayer);
+  m.bindPopup(`<strong>${name||'Shelter'}</strong><br/>Capacity: ${cap||'—'}`);
+  shelters.push({marker: m, name: name||'', cap: cap||''});
+  refreshShelterList();
+}
+
+function refreshShelterList(){
+  const el = document.getElementById('shelterList'); el.innerHTML = '';
+  shelters.forEach((s,i)=>{
+    const div = document.createElement('div'); div.className='item';
+    div.innerHTML = `<strong>${s.name||'Shelter'}</strong> — ${s.cap||'—'}<br/>
+      <button onclick="zoomShelter(${i})">Zoom</button> <button onclick="removeShelter(${i})">Remove</button>`;
+    el.appendChild(div);
+  });
+}
+
+function zoomShelter(i){ map.setView(shelters[i].marker.getLatLng(), 15); }
+function removeShelter(i){ shelterLayer.removeLayer(shelters[i].marker); shelters.splice(i,1); refreshShelterList(); }
+
+function reportIncidentAt(latlng, title='', desc=''){
+  const m = L.marker(latlng, {icon: L.icon({iconUrl:'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',iconSize:[32,32]})}).addTo(incidentLayer);
+  const ts = new Date().toISOString();
+  m.bindPopup(`<strong>${title||'Incident'}</strong><br/>${desc||''}<br/><small>${ts}</small>`);
+  incidents.push({marker: m, title:title||'', desc:desc||'', ts});
+  refreshIncidentList();
+}
+
+function refreshIncidentList(){
+  const el = document.getElementById('incidentList'); el.innerHTML = '';
+  incidents.forEach((it,i)=>{
+    const d = document.createElement('div'); d.className='item';
+    d.innerHTML = `<strong>${it.title||'Incident'}</strong> — ${it.ts}<br/>${it.desc||''}<br/>
+      <button onclick="zoomIncident(${i})">Zoom</button> <button onclick="removeIncident(${i})">Remove</button>`;
+    el.appendChild(d);
+  });
+}
+function zoomIncident(i){ map.setView(incidents[i].marker.getLatLng(), 15); }
+function removeIncident(i){ incidentLayer.removeLayer(incidents[i].marker); incidents.splice(i,1); refreshIncidentList(); }
+
+function addHazardPolygon(layer){
+  hazardLayer.addLayer(layer);
+  hazards.push(layer);
+  // attach delete handler so user can remove by right-click/contextmenu
+  attachPolygonDelete(layer);
+  layer.bindPopup('Hazard zone (right-click polygon to remove)');
+}
+
+function clearHazards(){ hazards.forEach(h=>hazardLayer.removeLayer(h)); hazards.length = 0; hazardLayer.clearLayers(); }
+
+function showSelectedPoint(latlng){
+  if (selectedPoint) map.removeLayer(selectedPoint);
+  selectedPoint = L.circleMarker(latlng, {radius:7, color:'#2b8cff', fillColor:'#2b8cff', fillOpacity:1}).addTo(map);
+  document.getElementById('myInfo').textContent = `Selected: ${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+}
+
+/* -----------------------
+   Draw events (single correct handler)
+   ----------------------- */
+map.on('draw:created', function(e){
+  const layer = e.layer;
+  if (e.layerType === 'polygon'){
+    addHazardPolygon(layer);
+  }
+});
+
+/* -----------------------
+   Map click: select or add
+   ----------------------- */
+map.on('click', function(e){
+  const addShelterBtn = document.getElementById('btnAddShelter');
+  const reportBtn = document.getElementById('btnReport');
+  if (addShelterBtn.dataset.mode === 'click'){
+    const name = document.getElementById('shelterName').value;
+    const cap = document.getElementById('shelterCap').value;
+    addShelterAt(e.latlng, name, cap);
+    addShelterBtn.dataset.mode = ''; addShelterBtn.textContent = 'Add Shelter at Map Center';
+    return;
+  }
+  if (reportBtn.dataset.mode === 'click'){
+    const title = document.getElementById('incidentTitle').value;
+    const desc = document.getElementById('incidentDesc').value;
+    reportIncidentAt(e.latlng, title, desc);
+    reportBtn.dataset.mode = ''; reportBtn.textContent = 'Report at Map Center';
+    return;
+  }
+
+  // otherwise simply set selected point
+  showSelectedPoint(e.latlng);
+});
+
+/* -----------------------
+   Polygon delete helper
+   ----------------------- */
+function attachPolygonDelete(poly){
+  poly.on('contextmenu', function(e){
+    if (confirm('Delete this hazard polygon?')) {
+      hazardLayer.removeLayer(poly);
+      const idx = hazards.indexOf(poly); if (idx>=0) hazards.splice(idx,1);
+    }
+  });
+}
+
+/* -----------------------
+   Buttons wiring
+   ----------------------- */
+document.getElementById('btnLocate').addEventListener('click', ()=> {
+  if (!navigator.geolocation) return alert('Geolocation not supported');
+  navigator.geolocation.getCurrentPosition(p=>{
+    const pos = L.latLng(p.coords.latitude, p.coords.longitude);
+    map.setView(pos, 14);
+    if (window.meMarker) map.removeLayer(window.meMarker);
+    window.meMarker = L.marker(pos, {icon: L.icon({iconUrl:'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',iconSize:[32,32]})}).addTo(map);
+    document.getElementById('myInfo').textContent = `You: ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
+  }, err => alert('Geolocation error: ' + err.message));
+});
+
+document.getElementById('btnAddShelter').addEventListener('click', ()=> {
+  const btn = document.getElementById('btnAddShelter');
+  if (btn.dataset.mode === 'click'){
+    btn.dataset.mode = '';
+    btn.textContent = 'Add Shelter at Map Center';
+    addShelterAt(map.getCenter(), document.getElementById('shelterName').value, document.getElementById('shelterCap').value);
+  } else {
+    btn.dataset.mode = 'click'; btn.textContent = 'Click map to place shelter';
+  }
+});
+
+document.getElementById('btnReport').addEventListener('click', ()=> {
+  const btn = document.getElementById('btnReport');
+  if (btn.dataset.mode === 'click'){
+    btn.dataset.mode = ''; btn.textContent = 'Report at Map Center';
+    reportIncidentAt(map.getCenter(), document.getElementById('incidentTitle').value, document.getElementById('incidentDesc').value);
+  } else {
+    btn.dataset.mode = 'click'; btn.textContent = 'Click map to report';
+  }
+});
+
+document.getElementById('btnDrawHazard').addEventListener('click', ()=> {
+  new L.Draw.Polygon(map, drawControl.options.draw.polygon).enable();
+});
+
+document.getElementById('btnClearHazards').addEventListener('click', ()=> {
+  if (!confirm('Clear all hazard zones?')) return;
+  clearHazards();
+});
+
+document.getElementById('btnClearAll').addEventListener('click', ()=> {
+  if (!confirm('Clear shelters, incidents, hazards and route?')) return;
+  shelters.forEach(s=>shelterLayer.removeLayer(s.marker)); shelters = []; refreshShelterList();
+  incidents.forEach(i=>incidentLayer.removeLayer(i.marker)); incidents = []; refreshIncidentList();
+  clearHazards();
+  routeLayer.clearLayers();
+  if (selectedPoint) { map.removeLayer(selectedPoint); selectedPoint = null; document.getElementById('myInfo').textContent = '—'; }
+});
+
+document.getElementById('btnExportShelters').addEventListener('click', ()=> {
+  if (shelters.length===0) return alert('No shelters to export');
+  const rows = [['name','lat','lng','capacity']];
+  shelters.forEach(s => rows.push([s.name, s.marker.getLatLng().lat, s.marker.getLatLng().lng, s.cap]));
+  downloadCSV(rows,'shelters.csv');
+});
+
+document.getElementById('btnExportIncidents').addEventListener('click', ()=> {
+  if (incidents.length===0) return alert('No incidents');
+  const rows = [['title','desc','lat','lng','timestamp']];
+  incidents.forEach(it => { rows.push([it.title, it.desc, it.marker.getLatLng().lat, it.marker.getLatLng().lng, it.ts]); });
+  downloadCSV(rows,'incidents.csv');
+});
+
+function downloadCSV(rows, filename){
+  const csv = rows.map(r => r.map(c => `"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+/* -----------------------
+   Evacuation planning
+   ----------------------- */
+async function planEvacuation(){
+  if (!selectedPoint) return alert('Select a starting point by clicking the map.');
+  if (shelters.length===0) return alert('No shelters defined.');
+
+  // get hazard polygons from the hazardLayer (authoritative)
+  const hazardPolys = hazardLayer.getLayers().map(poly => poly.toGeoJSON());
+
+  // choose shelters that are NOT inside any hazard polygon
+  const safeShelters = shelters.filter(s => {
+    const pt = turf.point([s.marker.getLatLng().lng, s.marker.getLatLng().lat]);
+    for (const h of hazardPolys) {
+      if (turf.booleanPointInPolygon(pt, h)) return false;
+    }
+    return true;
+  });
+  if (safeShelters.length === 0) return alert('No safe shelters available (all are inside hazard zones).');
+
+  // find nearest by straight-line distance
+  const from = selectedPoint.getLatLng();
+  let nearest = null; let minDist = Infinity;
+  for (const s of safeShelters){
+    const d = from.distanceTo(s.marker.getLatLng());
+    if (d < minDist){ minDist = d; nearest = s; }
+  }
+
+  // Request route from OSRM (public demo) - uses lon,lat order
+  const start = `${from.lng},${from.lat}`;
+  const end = `${nearest.marker.getLatLng().lng},${nearest.marker.getLatLng().lat}`;
+  const url = `${osrmBase}/${start};${end}?overview=full&geometries=geojson&steps=false`;
+  try {
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Routing failed: ' + res.status);
+    const data = await res.json();
+    if (!data.routes || data.routes.length===0) throw new Error('No route found.');
+    const geo = data.routes[0].geometry;
+    routeLayer.clearLayers();
+    const route = L.geoJSON(geo, { style: { color: '#007bff', weight: 5, opacity: 0.9 } }).addTo(routeLayer);
+    map.fitBounds(route.getBounds(), {padding:[30,30]});
+  } catch(err){
+    alert('Routing error: ' + err.message);
+  }
+}
+
+/* -----------------------
+   Initialize some sample data to test quickly
+   ----------------------- */
+function attachPolygonDelete(poly){
+  poly.on('contextmenu', function(e){
+    if (confirm('Delete this hazard polygon?')) {
+      hazardLayer.removeLayer(poly);
+      const idx = hazards.indexOf(poly); if (idx>=0) hazards.splice(idx,1);
+    }
+  });
+}
+
+function loadSample(){
+  addShelterAt([26.8,94.2],'Community Hall A',200);
+  addShelterAt([26.0,92.7],'School Stadium B',150);
+  // example hazard (polygon) - ensure delete handler attached
+  const p = L.polygon([[26.6,93.2],[26.65,93.6],[26.3,93.5],[26.18,93.1]]);
+  addHazardPolygon(p);
+  refreshShelterList();
+  refreshIncidentList();
+}
+loadSample();
+
+/* -----------------------
+   Hook plan & clear route
+   ----------------------- */
+document.getElementById('btnPlanEvac').addEventListener('click', planEvacuation);
+document.getElementById('btnClearRoute').addEventListener('click', ()=>{ routeLayer.clearLayers(); });
+
+/* Expose functions used in inline HTML for lists */
+window.zoomShelter = zoomShelter;
+window.removeShelter = removeShelter;
+window.zoomIncident = zoomIncident;
+window.removeIncident = removeIncident;
+
+/* Toggle layers visibility */
+document.getElementById('chkHazard').addEventListener('change', function(){ this.checked?hazardLayer.addTo(map):hazardLayer.removeFrom(map); });
+document.getElementById('chkShelter').addEventListener('change', function(){ this.checked?shelterLayer.addTo(map):shelterLayer.removeFrom(map); });
+
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>

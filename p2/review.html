@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Preparedness & Ratings UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+       
+        .star-container {
+            display: inline-block;
+            position: relative;
+            font-size: 2.5rem;
+            line-height: 2;
+        }
+        .full-stars {
+            color: #fbbf24; 
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .empty-stars {
+            color: #d1d5db;
+        }
+        .star-char {
+           
+            content: "★★★★★";
+            letter-spacing: 0.1rem;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; 
+        }
+        
+        #review-rating {
+            appearance: none; 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+    </style>
+    <script>
+        
+        function calculateAverageRating() {
+            if (reviewsData.length === 0) return 0;
+            const totalRating = reviewsData.reduce((sum, review) => sum + review.rating, 0);
+            return totalRating / reviewsData.length;
+        }
+
+        
+        function renderStars(rating) {
+            const fillPercentage = (rating / 5) * 100;
+            return `
+                <div class="star-container">
+                    <div class="empty-stars star-char">★★★★★</div>
+                    <div class="full-stars star-char" style="width: ${fillPercentage}%;">★★★★★</div>
+                </div>
+            `;
+        }
+        
+        
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                if (!file) return resolve(null);
+                
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        
+        async function handleReviewSubmission(event) {
+            event.preventDefault(); 
+
+            const reviewerName = document.getElementById('reviewer-name').value.trim();
+            const reviewText = document.getElementById('review-text').value;
+            const ratingValue = parseFloat(document.getElementById('review-rating').value);
+            const imageFile = document.getElementById('review-image').files[0]; 
+
+            if (!reviewerName) {
+                alert('Please enter your name.');
+                return;
+            }
+
+            if (!reviewText || isNaN(ratingValue) || ratingValue < 1 || ratingValue > 5) {
+                alert('Please enter a review and select a valid rating (1 to 5).');
+                return;
+            }
+            
+            
+            const imageDataURL = await readFileAsDataURL(imageFile);
+
+
+            const newId = reviewsData.length > 0 ? reviewsData[reviewsData.length - 1].id + 1 : 1;
+
+            const newReview = {
+                id: newId,
+                name: reviewerName,
+                review: reviewText,
+                rating: ratingValue,
+                image: imageDataURL 
+            };
+
+            
+            reviewsData.push(newReview);
+
+            
+            document.getElementById('review-form').reset();
+            
+            
+            initializeUI();
+
+            alert('Thank you for your review!');
+        }
+
+        
+        function initializeUI() {
+            const avgRating = calculateAverageRating();
+            const totalRatingElement = document.getElementById('total-rating-display');
+            const reviewsListElement = document.getElementById('reviews-list');
+            
+            
+            reviewsListElement.innerHTML = ''; 
+
+            
+            totalRatingElement.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    ${renderStars(avgRating)}
+                    <span class="text-3xl font-bold text-gray-800">${avgRating.toFixed(1)}</span>
+                    <span class="text-lg text-gray-500">(${reviewsData.length} reviews)</span>
+                </div>
+            `;
+
+            
+            reviewsData.forEach(review => {
+                
+                const imageHTML = review.image
+                    ? <img src="${review.image}" alt="Review image" class="mt-3 w-32 h-32 object-cover rounded-md border border-gray-200 shadow-sm">
+                    : '';
+                
+                const reviewItem = document.createElement('div');
+                reviewItem.className = 'border-b border-gray-100 last:border-b-0 p-4';
+                reviewItem.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:justify-between">
+                        <div class="sm:w-3/4">
+                            <div class="mb-1">
+                                <span class="font-bold text-gray-700">${review.name}</span>
+                            </div>
+                            <div class="mb-2">
+                                ${renderStars(review.rating)}
+                            </div>
+                            <p class="text-gray-600 italic">${review.review}</p>
+                            ${imageHTML} </div>
+                    </div>
+                `;
+                reviewsListElement.prepend(reviewItem); 
+            });
+        }
+
+        
+        window.onload = () => {
+            const form = document.getElementById('review-form');
+            if (form) {
+                
+                form.addEventListener('submit', (e) => handleReviewSubmission(e));
+            }
+            initializeUI();
+        };
+
+    </script>
+</head>
+<body class="p-8">
+
+    <div class="container mx-auto flex flex-col space-y-8 max-w-4xl">
+
+        <div class="bg-blue-600 p-8 rounded-xl shadow-lg flex items-center">
+            <blockquote class="text-white text-xl font-extrabold italic leading-relaxed">
+                "We cannot stop natural disasters but we can arm ourselves with knowledge: so many lives wouldn't have to be lost if there was enough disaster preparedness"
+            </blockquote>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <h2 class="text-4xl font-bold mb-6 text-gray-800 border-b pb-2">Customer Feedback</h2>
+
+            <div class="mb-6 p-4 bg-yellow-50 rounded-lg border-yellow-200 border">
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">Total Rating</h3>
+                <div id="total-rating-display" class="flex items-center">
+                    <div class="text-gray-400">Loading rating...</div>
+                </div>
+            </div>
+
+            <div class="mb-8 p-6 bg-blue-50 rounded-lg border-blue-200 border">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Leave a Review 📝</h3>
+                <form id="review-form">
+                    
+                    <div class="mb-4">
+                        <label for="reviewer-name" class="block text-sm font-medium text-gray-700 mb-1">Your Name:</label>
+                        <input type="text" id="reviewer-name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border" placeholder="Enter your name">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="review-text" class="block text-sm font-medium text-gray-700 mb-1">Your Review/Comment:</label>
+                        <textarea id="review-text" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"></textarea>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="review-image" class="block text-sm font-medium text-gray-700 mb-1">Attach an Image (Optional):</label>
+                        <input type="file" id="review-image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="review-rating" class="block text-sm font-medium text-gray-700 mb-1">Rating (1-5):</label>
+                        <select id="review-rating" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                            <option value="">Select a rating</option>
+                            <option value="5">5 Stars - Excellent</option>
+                            <option value="4.5">4.5 Stars</option>
+                            <option value="4">4 Stars - Very Good</option>
+                            <option value="3.5">3.5 Stars</option>
+                            <option value="3">3 Stars - Good</option>
+                            <option value="2.5">2.5 Stars</option>
+                            <option value="2">2 Stars - Fair</option>
+                            <option value="1.5">1.5 Stars</option>
+                            <option value="1">1 Star - Poor</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Submit Review
+                    </button>
+                </form>
+            </div>
+
+
+            <div>
+                <h3 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">Recent Reviews</h3>
+                <div id="reviews-list" class="divide-y divide-gray-100 border rounded-lg overflow-hidden">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

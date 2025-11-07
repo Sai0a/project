@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Live Location Tracker</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    crossorigin=""
+  />
+
+  <style>
+    :root{ --primary:#0a4d8c; --accent:#28a745;}
+    body{ font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      margin:0; background:#f7fbff; color:#111; display:flex; flex-direction:column; min-height:100vh;}
+    header{ background:var(--primary); color:white; padding:18px 20px; text-align:center;}
+    main{ flex:1; display:flex; gap:18px; padding:18px; flex-wrap:wrap; align-items:flex-start; justify-content:center;}
+    .panel{ background:white; border-radius:12px; box-shadow:0 6px 18px rgba(10,77,140,0.08); padding:16px; width:360px; max-width:95%;}
+    #map { height:480px; width:720px; max-width:95%; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.08); }
+    .controls{ display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+    input[type="number"], select { padding:8px 10px; border-radius:8px; border:1px solid #d8e6f6; width:120px; }
+    button{ background:var(--primary); color:white; border:none; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; }
+    button.secondary{ background:var(--accent); }
+    .info-row{ display:flex; justify-content:space-between; gap:8px; padding:8px 0; border-bottom:1px dashed #eef6ff; font-size:0.95rem; }
+    .small{ font-size:0.9rem; color:#555; }
+    .log-list{ max-height:220px; overflow:auto; margin-top:8px; border-radius:8px; padding:8px; background:#fbfeff; }
+    .log-item{ font-family:monospace; font-size:0.9rem; padding:6px 4px; border-bottom:1px solid #eef6ff; }
+    footer{ text-align:center; padding:12px; font-size:0.9rem; color:#666; }
+    .notice{ background:#fff3cd; color:#856404; padding:10px; border-radius:8px; margin-bottom:12px; border:1px solid #ffeeba; }
+    .error{ background:#f8d7da; color:#7a1216; padding:10px; border-radius:8px; margin-bottom:12px; border:1px solid #f5c6cb; }
+    @media (max-width:980px){ main{flex-direction:column; align-items:center;} #map{height:380px;} }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Live Location Tracker</h1>
+    <div class="small">Must be opened on <strong>https</strong> or <strong>localhost</strong>. Allow location access when prompted.</div>
+  </header>
+
+  <main>
+    <div class="panel" id="controlsPanel">
+      <div id="statusBox" class="notice" style="display:none;"></div>
+
+      <h3>Controls</h3>
+      <div class="controls">
+        <button id="btnGetNow">Get Location Now</button>
+        <button id="btnStart" title="Start continuous tracking">Start Tracking</button>
+        <button id="btnStop" class="secondary" disabled>Stop Tracking</button>
+      </div>
+
+      <div style="margin-top:8px;">
+        <label class="small">Mode / interval:</label>
+        <div style="display:flex; gap:8px; margin-top:6px;">
+          <select id="modeSelect" title="watchPosition or polling">
+            <option value="watch">watchPosition (recommended)</option>
+            <option value="poll">poll every N seconds</option>
+          </select>
+          <input id="pollInterval" type="number" min="1" value="5" />
+          <span class="small" style="align-self:center;">seconds</span>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <label class="small">Logging & export:</label>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button id="btnClearLog" title="Clear log">Clear Log</button>
+          <button id="btnExportCSV" title="Export CSV">Export CSV</button>
+        </div>
+      </div>
+
+      <hr style="margin:12px 0; border:none; border-top:1px solid #eef6ff">
+
+      <div>
+        <div class="info-row"><div>Latitude</div><div id="lat">—</div></div>
+        <div class="info-row"><div>Longitude</div><div id="lon">—</div></div>
+        <div class="info-row"><div>Accuracy</div><div id="acc">—</div></div>
+        <div class="info-row"><div>Timestamp</div><div id="time">—</div></div>
+        <div class="info-row"><div>Provider</div><div id="provider">—</div></div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <label class="small">Logged positions</label>
+        <div class="log-list" id="logList" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div id="map" aria-label="Map showing user location"></div>
+  </main>
+
+  <footer>
+    <div id="instructions">
+      <strong>Run locally (recommended):</strong>
+      <div class="small">Open a terminal in the folder with this file and run one of the commands below, then open <code>http://localhost:8000/live_location.html</code></div>
+      <ul class="small">
+        <li><strong>Python 3:</strong> <code>python -m http.server 8000</code></li>
+        <li><strong>Node (http-server):</strong> <code>npx http-server -p 8000</code></li>
+        <li><strong>VS Code:</strong> Use Live Server extension and open the file.</li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <script>
+    // Elements
+    const statusBox = document.getElementById('statusBox');
+    const latEl = document.getElementById('lat');
+    const lonEl = document.getElementById('lon');
+    const accEl = document.getElementById('acc');
+    const timeEl = document.getElementById('time');
+    const providerEl = document.getElementById('provider');
+
+    const btnGetNow = document.getElementById('btnGetNow');
+    const btnStart = document.getElementById('btnStart');
+    const btnStop = document.getElementById('btnStop');
+    const btnClearLog = document.getElementById('btnClearLog');
+    const btnExportCSV = document.getElementById('btnExportCSV');
+
+    const modeSelect = document.getElementById('modeSelect');
+    const pollIntervalInput = document.getElementById('pollInterval');
+
+    const logList = document.getElementById('logList');
+
+    // Map setup
+    let map = L.map('map', { center: [26.2, 92.5], zoom: 6 }); // NE India default
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker = null;
+    let accuracyCircle = null;
+    let polyline = L.polyline([], { weight: 4 }).addTo(map);
+    const positionLog = [];
+
+    let watchId = null;
+    let pollTimer = null;
+
+    function showStatus(msg, type = 'notice') {
+      statusBox.style.display = 'block';
+      statusBox.className = (type === 'error') ? 'error' : 'notice';
+      statusBox.textContent = msg;
+    }
+    function hideStatus(){ statusBox.style.display = 'none'; statusBox.textContent = ''; }
+
+    function formatTimestamp(ts) {
+      try { return new Date(ts).toLocaleString(); } catch(e){ return String(ts); }
+    }
+
+    function addLog(pos) {
+      const item = document.createElement('div');
+      item.className = 'log-item';
+      item.textContent = `${formatTimestamp(pos.timestamp)} — ${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)} (acc ${pos.coords.accuracy} m)`;
+      logList.prepend(item);
+      positionLog.push({
+        timestamp: pos.timestamp,
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        accuracy: pos.coords.accuracy
+      });
+    }
+
+    function updateMap(latitude, longitude, accuracy) {
+      const latlng = [latitude, longitude];
+      if (!marker) marker = L.marker(latlng).addTo(map); else marker.setLatLng(latlng);
+      if (!accuracyCircle) accuracyCircle = L.circle(latlng, { radius: accuracy || 50 }).addTo(map);
+      else { accuracyCircle.setLatLng(latlng); accuracyCircle.setRadius(accuracy || 50); }
+      polyline.addLatLng(latlng);
+      try { map.setView(latlng, Math.max(map.getZoom(), 12), { animate: true }); } catch(e){}
+    }
+
+    function displayPosition(pos, provider = 'navigator.geolocation') {
+      hideStatus();
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      latEl.textContent = lat.toFixed(6);
+      lonEl.textContent = lon.toFixed(6);
+      accEl.textContent = `${pos.coords.accuracy} m`;
+      timeEl.textContent = formatTimestamp(pos.timestamp || Date.now());
+      providerEl.textContent = provider;
+      addLog(pos);
+      updateMap(lat, lon, pos.coords.accuracy || 50);
+    }
+
+    function handleError(err) {
+      console.error('Geolocation error', err);
+      let msg = 'Geolocation error.';
+      if (err && err.code !== undefined) {
+        switch(err.code) {
+          case 1: msg = 'Permission denied. Please allow location access in your browser.'; break;
+          case 2: msg = 'Position unavailable. Try again.'; break;
+          case 3: msg = 'Timeout getting position.'; break;
+        }
+      } else if (err && err.message) msg = err.message;
+      showStatus(msg, 'error');
+      alert(msg);
+    }
+
+    // Button handlers
+    btnGetNow.addEventListener('click', () => {
+      if (!navigator.geolocation) { alert('Geolocation not supported by this browser.'); return; }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => displayPosition(pos, 'getCurrentPosition'),
+        handleError,
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
+      );
+    });
+
+    btnStart.addEventListener('click', () => {
+      if (!navigator.geolocation) { alert('Geolocation not supported.'); return; }
+      btnStart.disabled = true; btnStop.disabled = false;
+      const mode = modeSelect.value;
+      if (mode === 'watch') {
+        showStatus('Tracking with watchPosition — allow the permission prompt if it appears.');
+        watchId = navigator.geolocation.watchPosition(
+          (pos) => displayPosition(pos, 'watchPosition'),
+          handleError,
+          { enableHighAccuracy: true, maximumAge: 2000, timeout: 30000 }
+        );
+      } else {
+        const intervalSec = Math.max(1, Number(pollIntervalInput.value) || 5);
+        showStatus(`Polling every ${intervalSec} second(s).`);
+        navigator.geolocation.getCurrentPosition(
+          (pos) => displayPosition(pos, 'poll-getCurrentPosition'),
+          handleError,
+          { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
+        );
+        pollTimer = setInterval(() => {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => displayPosition(pos, 'poll-getCurrentPosition'),
+            handleError,
+            { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
+          );
+        }, intervalSec * 1000);
+      }
+    });
+
+    btnStop.addEventListener('click', () => {
+      btnStart.disabled = false; btnStop.disabled = true;
+      if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+      if (pollTimer !== null) { clearInterval(pollTimer); pollTimer = null; }
+      showStatus('Tracking stopped.');
+      setTimeout(hideStatus, 3500);
+    });
+
+    btnClearLog.addEventListener('click', () => {
+      if (!confirm('Clear the logged positions?')) return;
+      positionLog.length = 0; logList.innerHTML = '';
+      polyline.setLatLngs([]);
+      if (marker) { map.removeLayer(marker); marker = null; }
+      if (accuracyCircle) { map.removeLayer(accuracyCircle); accuracyCircle = null; }
+      latEl.textContent = '—'; lonEl.textContent = '—'; accEl.textContent = '—'; timeEl.textContent = '—'; providerEl.textContent = '—';
+      showStatus('Log cleared.');
+      setTimeout(hideStatus, 2000);
+    });
+
+    btnExportCSV.addEventListener('click', () => {
+      if (positionLog.length === 0) { alert('No logged positions to export.'); return; }
+      const header = ['timestamp', 'latitude', 'longitude', 'accuracy_m'];
+      const rows = positionLog.map(p => [new Date(p.timestamp).toISOString(), p.latitude, p.longitude, p.accuracy]);
+      const csvContent = [header, ...rows].map(r => r.join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'location_log.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // Permission warm-up and insecure context detection
+    (function init(){
+      // If not secure and not localhost, show instruction
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        showStatus('This page is not served over HTTPS. To use geolocation, run a local server and open on http://localhost or host this page over HTTPS.', 'error');
+      } else {
+        hideStatus();
+      }
+
+      // Try to read permission state (if supported) to show tips
+      if (navigator.permissions && navigator.permissions.query) {
+        try {
+          navigator.permissions.query({ name: 'geolocation' }).then((p) => {
+            if (p.state === 'denied') {
+              showStatus('Geolocation permission currently denied — enable it in the browser site settings.', 'error');
+            } else if (p.state === 'prompt') {
+              showStatus('Click "Start Tracking" or "Get Location Now" and allow the location prompt.', 'notice');
+            } else { hideStatus(); }
+            p.onchange = () => {
+              if (p.state === 'denied') showStatus('Geolocation permission denied — enable it in site settings.', 'error');
+              else if (p.state === 'granted') hideStatus();
+            };
+          }).catch(()=>{ /* ignore */ });
+        } catch(e){ /* ignore */ }
+      }
+    })();
+  </script>
+</body>
+</html>

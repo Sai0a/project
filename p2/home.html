@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaGa Disaster Management</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+        
+        
+        .gothic-text {
+            font-family: 'Playfair Display', serif; 
+            letter-spacing: 0.15em;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 25, 25, 0.5);
+            font-weight: 900;
+        }
+
+        
+        .video-container {  
+            position: relative;
+            width: 100%;
+            height: 70vh; 
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            opacity: 0.3; 
+        }
+
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7); 
+            z-index: 1;
+        }
+
+        
+        .hero-content {
+            z-index: 2;
+        }
+
+        
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        #sos-button {
+            animation: pulse-red 2s infinite;
+        }
+
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f8f8;
+        }
+        #join-button:hover{
+            background-color: white;
+
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    
+    <header  class="sticky top-0 z-50 bg-white shadow-md">
+        <nav class="flex items-center justify-between h-14 px-4 sm:px-8 border-b border-red-500/30">
+           
+            <div class="flex items-center space-x-2">
+                <div class="text-3xl font-extrabold text-red-700">SAGA</div>
+                <div class="text-xs font-semibold text-gray-500 hidden sm:block">Disaster authority</div>
+            </div>
+
+           
+            <div class="flex items-center space-x-3">
+                
+                <button id="sos-button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-4 rounded-full text-sm transition duration-300 flex items-center shadow-lg transform hover:scale-105" onclick="triggerSOS()">
+                    <i data-lucide="siren" class="w-4 h-4 mr-1"></i>
+                    SOS
+                </button>
+
+                
+                <button class="text-gray-600 hover:text-red-600 transition duration-150 p-2 rounded-full hidden sm:block">
+                    <a href="info.html"><i data-lucide="help-circle" class="w-5 h-5"></i></a>
+                </button>
+
+                
+                <div class="relative">
+                    <button id="menu-toggle" class="text-gray-600 hover:text-red-600 transition duration-150 p-2 rounded-full flex items-center space-x-1" aria-expanded="false" aria-controls="menu-dropdown">
+                        <span class="hidden sm:inline"></span>
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+
+                    
+                    <div id="menu-dropdown" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black ring-opacity-5 focus:outline-none transition-all duration-200" role="menu" aria-orientation="vertical" aria-labelledby="menu-toggle">
+                        <span class="block px-4 py-2 text-xs text-gray-400 border-b">Select Region</span>
+                        <a href="aru.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600">Arunachal Pradesh</a>
+                        <a href="ass.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600">Assam</a>
+                        <a href="nag.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600">Nagaland</a>
+                        <a href="mani.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600">Manipur</a>
+                        <a href="miz.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600">Mizoram</a>
+                        <a href="tri.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600">Tripura</a>
+                        <a href="meg.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600">Meghalaya</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <section class="video-container shadow-2xl">
+        
+        <video autoplay muted loop id="disasterVideo" poster="https://placehold.co/1200x800/222/FFF?text=Disaster+Visuals">
+           
+            <source src="https://media.w3.org/2010/05/sintel/trailer.mp4" type="video/mp4">
+            
+        </video>
+        
+        <div class="video-overlay"></div>
+
+        
+        <div class="hero-content absolute inset-0 flex flex-col justify-center items-center text-center p-4">
+            <h1 class="gothic-text text-5xl sm:text-7xl lg:text-9xl text-white font-extrabold leading-tight">
+                DISASTER
+            </h1>
+            <h2 class="gothic-text text-3xl sm:text-5xl lg:text-7xl text-red-500 font-extrabold mt-2">
+                MANAGEMENT
+            </h2>
+            <p class="text-white mt-4 max-w-xl text-lg sm:text-xl font-medium">Preparedness and Response for Northeast India.</p>
+        </div>
+    </section>
+
+   
+    <section data-aos="fade-down" data-aos-duration=1400 data-aos-delay=1300 class="py-16 px-4 sm:px-8 bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-10 border-b-4 border-red-600 inline-block pb-1">
+                Recent Incidents & alerts
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-blue-600">
+                    <p class="text-sm font-semibold text-blue-600 mb-2">Earthquake</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">an earthquake measuring 5.9 on the Richter scale hit assam and parts of northeast India</h3>
+                    
+                    <a href="https://www.newsonair.gov.in/earthquake-of-5-9-magnitude-jolts-assam-and-northeast-india/" class="mt-4 inline-flex items-center text-red-600 hover:text-red-800 font-semibold text-sm">
+                        Read Full Report <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                    </a>
+                </div>
+
+                
+                <div class="bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-orange-600">
+                    <p class="text-sm font-semibold text-orange-600 mb-2">FLOODS WARNING</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Eight more dead as assam flood situation worsens, 700 landslides across northeast so far</h3>
+                    <p class="text-gray-600 line-clamp-3">
+                       More than floods, it is the landslides, landslips, and rockfalls that have been the major killers during the early monsoon rainfall across the region.
+                    </p>
+                    <a href="https://www.thehindu.com/news/national/northeast-flood-rains-landslides-toll-assam-arunachal-pradesh-sikkim-meghalaya-mizoram-tripura-rises-lakhs-affected-june-3-2025/article69651228.ece" class="mt-4 inline-flex items-center text-red-600 hover:text-red-800 font-semibold text-sm">
+                        View Safety Guidelines <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                    </a>
+                </div>
+
+                
+                <div class="bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-green-600">
+                    <p class="text-sm font-semibold text-green-600 mb-2">Landslide</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">at least 18 people have died and dozens have been displaced</h3>
+                    <p class="text-gray-600 line-clamp-3">
+                        The India Meteorological Department (IMD) has issued advisories regarding a potential cyclonic formation. Coastal areas of Tripura and Mizoram are on high alert for heavy rainfall in the coming 48 hours. Fishermen advised to not venture into the sea.Torrential rains wreak havoc in Northeast: Landslides, flash floods hit Mizoram, arunachal, assam, Manipur, Sikkim
+                    </p>
+                    <a href="https://timesofindia.indiatimes.com/india/torrential-rains-wreak-havoc-in-northeast-landslides-flash-floods-hit-mizoram-arunachal-assam-manipur-sikkim-18-dead-dozens-displaced/articleshow/121537804.cms" class="mt-4 inline-flex items-center text-red-600 hover:text-red-800 font-semibold text-sm">
+                        Check IMD alerts <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section id="resilient-infra" class="container mx-auto p-6 md:p-12 mt-16">
+  <h2 class="text-4xl font-bold text-teal-400 mb-8 text-center uppercase tracking-wider">
+    Resilient Infrastructure Dashboard
+  </h2>
+
+  <div data-aos="fade-right" data-aos-duration=500 data-aos-delay=500 class="bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700/50 grid lg:grid-cols-3 gap-8">
+    
+    
+    <div class="bg-gray-900 rounded-xl p-6 border border-gray-700 shadow-inner">
+      <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+        <svg class="w-6 h-6 mr-2 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Live Hazard Levels
+      </h3>
+      <div class="space-y-4">
+        <div>
+          <p class="text-sm text-gray-400">Flood Risk (Brahmaputra)</p>
+          <div class="w-full bg-gray-700 h-3 rounded-full overflow-hidden">
+            <div id="flood-bar" class="bg-blue-500 h-3 w-[65%]"></div>
+          </div>
+          <p class="text-xs text-blue-300 mt-1">Moderate (65%)</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-400">Landslide Probability</p>
+          <div class="w-full bg-gray-700 h-3 rounded-full overflow-hidden">
+            <div id="landslide-bar" class="bg-yellow-500 h-3 w-[40%]"></div>
+          </div>
+          <p class="text-xs text-yellow-300 mt-1">Low (40%)</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-400">Seismic Activity (Zone V)</p>
+          <div class="w-full bg-gray-700 h-3 rounded-full overflow-hidden">
+            <div id="seismic-bar" class="bg-red-600 h-3 w-[80%]"></div>
+          </div>
+          <p class="text-xs text-red-400 mt-1">High (80%)</p>
+        </div>
+      </div>
+    </div>
+
+    
+    <a href="map.html" class="relative rounded-xl overflow-hidden border border-gray-700 bg-gray-900 shadow-inner">
+      <h3 class="absolute top-3 left-4 text-white text-lg font-bold bg-gray-800/80 px-3 py-1 rounded-lg">Live Map View</h3>
+      <img src="https://placehold.co/600x400/1f2937/60a5fa?text=Critical+Infrastructure+Map" alt="Infrastructure Map" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity">
+    </a>
+
+   
+    <div class="bg-gray-900 rounded-xl p-6 border border-gray-700 flex flex-col justify-between">
+      <div>
+        <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+          <svg class="w-6 h-6 mr-2 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16h6m2 4H7a2 2 0 01-2-2V7a2 2 0 012-2h5l2 2h6a2 2 0 012 2v7" />
+          </svg>
+          Community Reports
+        </h3>
+        <ul id="report-list" class="text-sm text-gray-300 space-y-3">
+          <li>🌧 <span class="text-blue-300">Flooded road</span> near Jorhat bridge.</li>
+          <li>⛰ <span class="text-yellow-300">Minor landslide</span> reported in Itanagar.</li>
+          <li>🏥 <span class="text-green-300">New shelter</span> operational in Tezpur.</li>
+        </ul>
+      </div>
+
+      <button onclick="openReportModal()" class="mt-6 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-lg shadow-lg transition duration-300">
+        + Report New Incident
+      </button>
+    </div>
+  </div>
+</section>
+
+
+<div id="report-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+  <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl max-w-md w-full border border-teal-500 transform scale-95 transition-transform duration-300">
+    <h3 class="text-2xl font-bold text-teal-400 mb-4">Report an Incident</h3>
+    <form id="report-form" class="space-y-4">
+      <input type="text" id="location" placeholder="Location (e.g., Silchar, Assam)" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400">
+      <textarea id="description" placeholder="Describe the situation..." rows="3" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"></textarea>
+      <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 rounded-lg transition duration-300">Submit Report</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  
+  const reportModal = document.getElementById('report-modal');
+  const reportForm = document.getElementById('report-form');
+
+  function openReportModal() {
+    reportModal.classList.remove('hidden');
+    setTimeout(() => {
+      reportModal.classList.add('opacity-100');
+      reportModal.querySelector('div').classList.remove('scale-95');
+    }, 10);
+  }
+
+  function closeReportModal() {
+    reportModal.classList.remove('opacity-100');
+    reportModal.querySelector('div').classList.add('scale-95');
+    setTimeout(() => {
+      reportModal.classList.add('hidden');
+    }, 300);
+  }
+
+  
+  reportForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const location = document.getElementById('location').value.trim();
+    const desc = document.getElementById('description').value.trim();
+    if (location && desc) {
+      const reportList = document.getElementById('report-list');
+      const li = document.createElement('li');
+      li.innerHTML =  <span class="text-teal-300">Report:</span> ${desc} <span class="text-gray-400">(${location})</span>;
+      reportList.appendChild(li);
+      closeReportModal();
+      alertMessage('Your report has been recorded. Authorities will review it shortly.', 'Report Submitted', 'Success');
+    }
+  });
+
+  
+  reportModal.addEventListener('click', (e) => {
+    if (e.target === reportModal) closeReportModal();
+  });
+</script>
+    
+    <section class="py-16 px-4 sm:px-8 bg-gray-100">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-10 text-center">
+                Our Services in Northeastern States during Natural Disasters 
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                
+                <a  data-aos="fade-right" data-aos-duration=700 data-aos-delay=400 href="earth.html" class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-red-200 hover:scale-[1.02] transition duration-300">
+                    <i data-lucide="zap" class="w-8 h-8 mx-auto text-red-600 mb-3"></i>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Earthquake</h3>
+                    <p class="text-sm text-gray-600">The region lies in seismic zones V and IV, making it highly vulnerable to severe tremors.</p>
+                </a>
+
+                
+                <a data-aos="fade-down" data-aos-duration=1000 data-aos-delay=400 href="flood.html"class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-blue-200 hover:scale-[1.02] transition duration-300">
+                    <i data-lucide="droplets" class="w-8 h-8 mx-auto text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Floods</h3>
+                    <p class="text-sm text-gray-600">Monsoon season often brings catastrophic riverine and flash flooding across plains.</p>
+                </a>
+
+                
+                <a data-aos="fade-down" data-aos-duration=1200 data-aos-delay=400 href="land.html"class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-yellow-200 hover:scale-[1.02] transition duration-300">
+                    <i data-lucide="mountain" class="w-8 h-8 mx-auto text-yellow-600 mb-3"></i>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Landslides</h3>
+                    <p class="text-sm text-gray-600">Heavy rainfall on steep, fragile Himalayan terrain causes frequent, deadly landslips.</p>
+                </a>
+
+               
+                <a  data-aos="fade-down" data-aos-duration=1400 data-aos-delay=400 href="for.html"class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-orange-200 hover:scale-[1.02] transition duration-300">
+                    <i data-lucide="flame" class="w-8 h-8 mx-auto text-orange-600 mb-3"></i>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Forest Fire</h3>
+                    <p class="text-sm text-gray-600">Common during dry seasons, often caused by natural or human-induced activity.</p>
+                </a>
+
+                
+                <a data-aos="fade-left" data-aos-duration=1600 data-aos-delay=400 href="hail.html"class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-sky-200 hover:scale-[1.02] transition duration-300">
+                    <i data-lucide="cloud-lightning" class="w-8 h-8 mx-auto text-sky-600 mb-3"></i>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Hailstorm</h3>
+                    <p class="text-sm text-gray-600">Intense, localized hailstorms cause damage to crops and property during pre-monsoon.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="py-16 px-4 sm:px-8 bg-white">
+        <div class="max-w-4xl mx-auto text-center">
+             
+             <button id="sos-button-bottom" class="bg-red-600 hover:bg-red-700 text-white font-extrabold py-4 px-10 rounded-full text-xl transition duration-300 shadow-2xl hover:shadow-red-500/50 transform hover:scale-105 mb-8" onclick="triggerSOS()">
+                <div class="flex items-center justify-center space-x-2">
+                    <i data-lucide="siren" class="w-6 h-6"></i>
+                    <span>EMERGENCY SOS: DIaL 112</span>
+                </div>
+            </button>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
+                Immediate Help Contacts
+            </h2>
+            <p class="text-gray-600 mb-10 max-w-2xl mx-auto">
+                These are the most critical national and state-level disaster response numbers.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+                
+                <div class="p-6 bg-red-50 border-2 border-red-500 rounded-xl shadow-md">
+                    <i data-lucide="phone" class="w-6 h-6 text-red-600 mx-auto mb-2"></i>
+                    <p class="text-xs font-semibold text-red-600">NATIONAL EMERGENCY</p>
+                    <p class="text-3xl font-extrabold text-red-900">112</p>
+                </div>
+                 
+                 <div class="p-6 bg-blue-50 border-2 border-blue-500 rounded-xl shadow-md">
+                    <i data-lucide="ambulance" class="w-6 h-6 text-blue-600 mx-auto mb-2"></i>
+                    <p class="text-xs font-semibold text-blue-600">FIRE / AMBULANCE</p>
+                    <p class="text-3xl font-extrabold text-blue-900">101 / 102 / 108</p>
+                </div>
+                
+                <div class="p-6 bg-yellow-50 border-2 border-yellow-500 rounded-xl shadow-md">
+                    <i data-lucide="shield-alert" class="w-6 h-6 text-yellow-600 mx-auto mb-2"></i>
+                    <p class="text-xs font-semibold text-yellow-600">DISTRICT CONTROL</p>
+                    <p class="text-3xl font-extrabold text-yellow-900">1077</p>
+                </div>
+            </div>
+
+            
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Local Volunteer Contacts </h3>
+            <p class="text-sm text-red-600 mb-6">
+                **always prioritize 112 in a real emergency First.**
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                <div class="p-3 bg-gray-100 rounded-lg">
+                    <p class="text-xs text-gray-500">Sai</p>
+                    <p class="text-lg font-semibold text-gray-800" id="num1">8415817800</p>
+                </div>
+                <div class="p-3 bg-gray-100 rounded-lg">
+                    <p class="text-xs text-gray-500">aman</p>
+                    <p class="text-lg font-semibold text-gray-800" id="num2">7754991998</p>
+                </div>
+                <div class="p-3 bg-gray-100 rounded-lg">
+                    <p class="text-xs text-gray-500">abhyuday</p>
+                    <p class="text-lg font-semibold text-gray-800" id="num3">7728825533</p>
+                </div>
+                <div class="p-3 bg-gray-100 rounded-lg">
+                    <p class="text-xs text-gray-500">Piyush</p>
+                    <p class="text-lg font-semibold text-gray-800" id="num4">6033967434</p>
+                </div>
+                <div class="p-3 bg-gray-100 rounded-lg">
+                    <p class="text-xs text-gray-500">Garvit</p>
+                    <p class="text-lg font-semibold text-gray-800" id="num5">6909122053</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    
+    <div id="sos-message-box" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-sm w-full text-center border-t-8 border-red-600 transform transition-transform duration-300">
+            <i data-lucide="siren" class="w-12 h-12 text-red-600 mx-auto mb-4 animate-bounce"></i>
+            <h3 class="text-2xl font-bold text-red-700 mb-3">EMERGENCY ALERT!</h3>
+            <p class="text-gray-700 mb-6">You have initiated an immediate SOS call to the National Emergency Response System.</p>
+            <p class="text-lg font-semibold text-gray-800 mb-6">Connecting to 112...</p>
+            <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg" onclick="closeSOS()">
+                Close
+            </button>
+        </div>
+    </div>
+    <a href="services.html" id="join-button" ><button style="color:black; background-color: red; width: 300px;border-radius: 32px; height:60px; margin-left: 40px;margin-bottom:25px;"><b>Join Our Services</b></button></a>
+    <a href="review.html"class="why-button" ><button style="color:black; background-color: blue; width: 300px;border-radius: 32px; height:60px; margin-left: 40px;margin-bottom:25px;"><b>Leave a Review</b></button></a>
+    <a href="course.html"class="course.html" ><button style="color:black; background-color: green; width: 300px;border-radius: 32px; height:60px; margin-left: 40px;margin-bottom:25px;"><b>Our Courses</b></button></a>
+    <a style="height:40px" href="ads.html">
+        <li style="box-shadow: 0 0 12px purple; padding-left:570px;">Watch An Ad Save A Family</li></li>
+    </a>
+    <script>
+        
+        lucide.createIcons();
+
+        
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuDropdown = document.getElementById('menu-dropdown');
+
+        menuToggle.addEventListener('click', () => {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+            menuDropdown.classList.toggle('hidden');
+        });
+
+        
+        document.addEventListener('click', (event) => {
+            if (!menuToggle.contains(event.target) && !menuDropdown.contains(event.target)) {
+                menuDropdown.classList.add('hidden');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        
+        const sosMessageBox = document.getElementById('sos-message-box');
+
+        function triggerSOS() {
+            sosMessageBox.classList.remove('hidden');
+            
+            console.log("SOS triggered! Initiating contact with 112...");
+        }
+
+        function closeSOS() {
+            sosMessageBox.classList.add('hidden');
+        }
+
+       
+        function generateRandomMockNumbers() {
+            const prefixes = ["9435", "9706", "8876", "9954", "8473"];
+            const numberElements = [
+                document.getElementById('num1'),
+                document.getElementById('num2'),
+                document.getElementById('num3'),
+                document.getElementById('num4'),
+                document.getElementById('num5')
+            ];
+
+            numberElements.forEach((el, index) => {
+                let suffix = Math.floor(1000 + Math.random() * 9000); 
+                el.textContent = `${prefixes[index]}-${suffix}xx`;
+            });
+        }
+
+        
+        const video = document.getElementById('disasterVideo');
+        if (video) {
+            video.addEventListener('error', function() {
+                console.error("Video failed to load. Using static background/placeholder.");
+                
+                video.style.display = 'none';
+            });
+            
+            video.play().catch(error => {
+                console.warn("autoplay was blocked or failed:", error.message);
+            });
+        }
+
+
+        window.onload = generateRandomMockNumbers;
+    </script>
+    <script> window.chtlConfig = { chatbotId: "7261715454" } </script>
+    <script async data-id="7261715454" id="chtl-script" type="text/javascript" src="https://chatling.ai/js/embed.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+
+      AOS.init();
+    </script>
+    <script style="z-index: -1 ;" type="module" src="https://unpkg.com/@splinetool/viewer@1.10.97/build/spline-viewer.js"></script>
+    <spline-viewer style="height:200px ;"url="https://prod.spline.design/g6BNqah8RgDcYYjJ/scene.splinecode"></spline-viewer>
+</body>
+</html>

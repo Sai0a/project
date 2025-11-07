@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Forced Ads Player — Watch to Continue</title>
+  <style>
+    :root{--bg:#071022;--card:#0b1630;--accent:#06b6d4;--muted:#98a9bd}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:linear-gradient(180deg,#071022,#04101b);color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:18px}
+    .container{width:980px;max-width:96%;background:rgba(255,255,255,0.02);border-radius:12px;padding:18px;box-shadow:0 10px 40px rgba(2,6,23,.6)}
+    .player{background:var(--card);border-radius:10px;padding:12px}
+    .ad-area{height:420px;border-radius:8px;overflow:hidden;background:#041528;display:grid;place-items:center;position:relative}
+    .controls{display:flex;gap:8px;align-items:center;margin-top:12px}
+    button{background:var(--accent);border:0;padding:8px 12px;border-radius:8px;color:#042028;font-weight:700;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.05);color:var(--muted)}
+    .meta{display:flex;gap:12px;align-items:center;margin-top:10px;color:var(--muted);font-size:14px}
+    .progress{flex:1;height:12px;background:rgba(255,255,255,0.03);border-radius:8px;overflow:hidden}
+    .progress > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#06b6d4,#60a5fa)}
+    .badge{background:rgba(255,255,255,0.02);padding:6px 10px;border-radius:999px}
+    .overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.88),rgba(2,6,23,0.96));display:flex;align-items:center;justify-content:center;z-index:999}
+    .modal{background:#07192a;padding:22px;border-radius:12px;max-width:720px;width:96%;color:var(--muted)}
+    .modal h2{color:#e6eef6;margin:0 0 8px}
+    .note{font-size:13px;color:#a8c2d6}
+    .skip-disabled{opacity:.5;cursor:not-allowed}
+    footer{margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
+    iframe, video{width:100%;height:100%;border:0;background:black}
+    @media (max-width:640px){.ad-area{height:260px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="player">
+      <div id="adArea" class="ad-area" aria-live="polite"></div>
+      <div class="controls">
+        <button id="playBtn">Start Ads</button>
+        <button id="skipBtn" class="ghost skip-disabled" disabled>Skip (10s)</button>
+        <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+        <div class="badge" id="countBadge">0 / 0</div>
+      </div>
+      <div class="meta">
+        <div id="adTimer">--</div>
+        <div id="adTitle" style="font-weight:700">Ready</div>
+        <div style="flex:1"></div>
+        <button id="closeBtn" class="ghost">Close</button>
+      </div>
+      <footer>Brands included (placeholders): Acer, Mahindra, Coca-Cola, Sprite, Pepsi, Lenovo, Mountain Dew, IPL, FIFA, Official YouTube Ads — up to 5 ads at once.</footer>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay">
+    <div class="modal">
+      <h2>Please watch the ads to continue</h2>
+      <p class="note">This demo will play a sequence of ads (maximum 5 simultaneously selected from the list). A Skip button becomes available after 10 seconds of each ad. Replace the placeholder video URLs and YouTube IDs below with real assets when ready.</p>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px;gap:8px">
+        <button id="startBtn">Start Ads</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MAX_ADS = 5;
+    const SKIP_AFTER = 10;
+    const pool = [
+      {id:'acer', type:'video', label:'Acer — Laptop Offer', src:'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'},
+      {id:'mahindra', type:'video', label:'Mahindra — Built Tough', src:'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'},
+      {id:'cocacola', type:'video', label:'Coca-Cola — Taste the Feeling', src:'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4'},
+      {id:'sprite', type:'video', label:'Sprite — Obey Your Thirst', src:'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4'},
+      {id:'pepsi', type:'video', label:'Pepsi — Live For Now', src:'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4'},
+      {id:'lenovo', type:'video', label:'Lenovo — For Those Who Do', src:'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'},
+      {id:'mountaindew', type:'video', label:'Mountain Dew — Do The Dew', src:'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4'},
+      {id:'ipl', type:'video', label:'IPL — Cricket Moments', src:'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'},
+      {id:'fifa', type:'video', label:'FIFA — The Beautiful Game', src:'https://storage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4'}
+    ];
+    const adSequence = pool.slice(0, MAX_ADS);
+    let index = 0;
+    let forced = true;
+    let activeMedia = null;
+    let skipTimer = null;
+
+    const adArea = document.getElementById('adArea');
+    const playBtn = document.getElementById('playBtn');
+    const skipBtn = document.getElementById('skipBtn');
+    const progressBar = document.getElementById('progressBar');
+    const countBadge = document.getElementById('countBadge');
+    const adTimer = document.getElementById('adTimer');
+    const adTitle = document.getElementById('adTitle');
+    const closeBtn = document.getElementById('closeBtn');
+    const overlay = document.getElementById('overlay');
+    const startBtn = document.getElementById('startBtn');
+
+    countBadge.textContent = `0 / ${adSequence.length}`;
+
+    function enableSkipAfter(seconds){
+      skipBtn.disabled = true; skipBtn.classList.add('skip-disabled');
+      let remaining = seconds;
+      skipBtn.textContent = `Skip (${remaining}s)`;
+      if(skipTimer) clearInterval(skipTimer);
+      skipTimer = setInterval(()=>{
+        remaining -= 1;
+        if(remaining <= 0){
+          clearInterval(skipTimer);
+          skipBtn.disabled = false; skipBtn.classList.remove('skip-disabled');
+          skipBtn.textContent = 'Skip';
+        } else {
+          skipBtn.textContent = `Skip (${remaining}s)`;
+        }
+      },1000);
+    }
+
+    async function playAd(i){
+      if(i >= adSequence.length) return onAllFinished();
+      index = i;
+      const ad = adSequence[index];
+      countBadge.textContent = `${index+1} / ${adSequence.length}`;
+      adTitle.textContent = ad.label;
+      adArea.innerHTML = '';
+      progressBar.style.width = '0%'; adTimer.textContent = '--';
+      enableSkipAfter(SKIP_AFTER);
+
+      const v = document.createElement('video');
+      v.src = ad.src; v.autoplay = true; v.controls = false; v.playsInline = true;
+      adArea.appendChild(v);
+      activeMedia = v;
+      v.addEventListener('timeupdate',()=>{
+        if(v.duration) progressBar.style.width = (v.currentTime/v.duration*100)+'%';
+        adTimer.textContent = Math.ceil(Math.max(0,v.duration - v.currentTime))+'s';
+      });
+      v.addEventListener('ended',onAdEnded);
+    }
+
+    function onAdEnded(){
+      if(skipTimer) clearInterval(skipTimer);
+      skipBtn.disabled = true; skipBtn.classList.add('skip-disabled');
+      skipBtn.textContent = 'Skip (10s)';
+      if(index < adSequence.length-1) playAd(index+1); else onAllFinished();
+    }
+
+    function onAllFinished(){
+      adArea.innerHTML = '<div style="color:#9fb0c5;text-align:center">All ads finished — thank you.</div>';
+      progressBar.style.width = '100%'; adTimer.textContent = 'Done';
+      countBadge.textContent = `${adSequence.length} / ${adSequence.length}`;
+      forced = false; overlay.style.display = 'none';
+    }
+
+    skipBtn.addEventListener('click',()=>{ if(!skipBtn.disabled){ activeMedia.pause(); onAdEnded(); }});
+    playBtn.addEventListener('click',()=>playAd(index));
+    closeBtn.addEventListener('click',()=>{ if(forced) return alert('Please finish watching all ads before closing.'); document.querySelector('.container').style.display='none'; });
+    startBtn.addEventListener('click',()=>{ overlay.style.display='none'; playAd(0); });
+
+    overlay.style.display='flex';
+  </script>
+</body>
+</html>
