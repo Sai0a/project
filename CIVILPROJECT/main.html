@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusRide — NIT Arunachal Pradesh</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  :root {
+    --bg: #050A05;
+    --bg2: #0A120A;
+    --bg3: #0F1F0F;
+    --card: #0D1A0D;
+    --card2: #162416;
+    --accent: #22C55E;
+    --accent2: #4ADE80;
+    --teal: #86EFAC;
+    --blue: #FFFFFF;
+    --red: #FF4757;
+    --text: #F0FFF0;
+    --muted: #6B8F6B;
+    --border: rgba(255,255,255,0.07);
+    --glow: rgba(34,197,94,0.15);
+  }
+ 
+  html { scroll-behavior: smooth; }
+ 
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+ 
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2.5rem;
+    background: rgba(5,10,5,0.90);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.25rem;
+    color: var(--text);
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.875rem;
+    font-weight: 500; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--accent); color: #fff; border: none;
+    padding: 0.55rem 1.4rem; border-radius: 50px; font-size: 0.875rem;
+    font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(34,197,94,0.4); }
+ 
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 7rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34,197,94,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(74,222,128,0.1) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 20% 70%, rgba(255,255,255,0.07) 0%, transparent 50%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.35);
+    color: var(--accent2); font-size: 0.75rem; font-weight: 600;
+    padding: 0.35rem 1rem; border-radius: 50px; margin-bottom: 1.5rem;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 800; line-height: 1.05;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent2); }
+  .hero-sub {
+    font-size: 1.1rem; color: var(--muted); max-width: 520px;
+    margin: 1.25rem auto 2.5rem;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-btns {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .btn-primary {
+    background: var(--accent); color: #fff; border: none;
+    padding: 0.8rem 2rem; border-radius: 50px; font-size: 1rem;
+    font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(34,197,94,0.45); }
+  .btn-secondary {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border); padding: 0.8rem 2rem;
+    border-radius: 50px; font-size: 1rem; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .btn-secondary:hover { background: var(--bg3); border-color: rgba(255,255,255,0.15); }
+ 
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 4rem;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 700;
+    color: var(--text);
+  }
+  .stat-num span { color: var(--accent2); }
+  .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+ 
+  /* ── SECTIONS ── */
+  section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+  .section-tag {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700; line-height: 1.15; margin-bottom: 1rem;
+  }
+  .section-sub { color: var(--muted); max-width: 540px; font-size: 1rem; line-height: 1.7; }
+ 
+  /* ── FEATURES GRID ── */
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem; margin-top: 3rem;
+  }
+  .feat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.75rem;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .feat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent)), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .feat-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.14); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .feat-card:hover::before { opacity: 1; }
+  .feat-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 1.25rem;
+  }
+  .feat-card h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .feat-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+ 
+  /* ── RIDE SECTION ── */
+  .ride-section { background: var(--bg2); }
+  .ride-demo {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    margin-top: 3rem; align-items: start;
+  }
+  .ride-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.5rem; position: relative;
+  }
+  .ride-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+  .ride-card-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; }
+  .badge {
+    font-size: 0.7rem; font-weight: 700; padding: 3px 10px;
+    border-radius: 50px; letter-spacing: 0.04em;
+  }
+  .badge-green { background: rgba(74,222,128,0.15); color: var(--teal); }
+  .badge-orange { background: rgba(34,197,94,0.15); color: var(--accent); }
+  .badge-blue { background: rgba(255,255,255,0.1); color: var(--blue); }
+  .ride-route {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .route-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 2px solid var(--accent); background: var(--bg);
+    flex-shrink: 0;
+  }
+  .route-dot.dest { border-color: var(--accent2); }
+  .route-line {
+    width: 2px; height: 28px; background: linear-gradient(var(--accent), var(--accent2));
+    margin: 2px 4px;
+  }
+  .route-col { display: flex; flex-direction: column; }
+  .route-place { font-weight: 600; font-size: 0.95rem; }
+  .route-time { font-size: 0.78rem; color: var(--muted); }
+  .ride-meta {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+    margin-top: 1rem; padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .meta-item { }
+  .meta-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .meta-val { font-size: 0.95rem; font-weight: 600; margin-top: 1px; }
+  .seats-bar {
+    display: flex; gap: 5px; margin-top: 6px;
+  }
+  .seat {
+    width: 18px; height: 18px; border-radius: 4px;
+    border: 1.5px solid var(--accent);
+    background: rgba(74,222,128,0.12);
+  }
+  .seat.taken { background: var(--card2); border-color: var(--border); }
+  .ride-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+  .btn-join {
+    flex: 1; background: var(--accent); color: #fff; border: none;
+    padding: 0.6rem; border-radius: 10px; font-weight: 600;
+    font-size: 0.875rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.2s;
+  }
+  .btn-join:hover { opacity: 0.88; }
+  .btn-sos {
+    background: rgba(255,71,87,0.12); color: var(--red);
+    border: 1px solid rgba(255,71,87,0.25); padding: 0.6rem 1rem;
+    border-radius: 10px; font-size: 0.875rem; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s;
+  }
+  .btn-sos:hover { background: rgba(255,71,87,0.22); }
+ 
+  /* right panel ride form */
+  .form-panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.5rem;
+  }
+  .form-panel h3 {
+    font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+    margin-bottom: 1.25rem;
+  }
+  .form-group { margin-bottom: 1rem; }
+  .form-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 5px; }
+  .form-input {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); padding: 0.65rem 0.9rem; border-radius: 10px;
+    font-size: 0.9rem; font-family: 'DM Sans', sans-serif; outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: rgba(34,197,94,0.5); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .vehicle-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .veh-btn {
+    background: var(--bg3); border: 1px solid var(--border); color: var(--muted);
+    padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.82rem;
+    cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .veh-btn.active, .veh-btn:hover { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); color: var(--accent); }
+  .btn-post {
+    width: 100%; background: linear-gradient(135deg, var(--accent), #16A34A);
+    color: #fff; border: none; padding: 0.75rem; border-radius: 10px;
+    font-weight: 700; font-size: 0.95rem; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; margin-top: 0.5rem;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .btn-post:hover { opacity: 0.9; transform: translateY(-1px); }
+ 
+  /* ── RENTAL ── */
+  .rental-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem; margin-top: 3rem;
+  }
+  .rental-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .rental-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
+  .rental-img {
+    height: 130px; display: flex; align-items: center; justify-content: center;
+    font-size: 4rem;
+    position: relative;
+  }
+  .rental-img-scooty { background: linear-gradient(135deg, #050A05, #0A1F0A); }
+  .rental-img-bike { background: linear-gradient(135deg, #050A05, #0A1A0A); }
+  .rental-img-cycle { background: linear-gradient(135deg, #050A05, #0D200D); }
+  .avail-dot {
+    position: absolute; top: 12px; right: 12px;
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,212,170,0.2);
+  }
+  .rental-body { padding: 1rem 1.15rem 1.15rem; }
+  .rental-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; }
+  .rental-owner { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .rental-price {
+    font-size: 1.2rem; font-weight: 700; color: var(--accent);
+    margin: 0.6rem 0; font-family: 'Syne', sans-serif;
+  }
+  .rental-price small { font-size: 0.7rem; color: var(--muted); font-weight: 400; font-family: 'DM Sans', sans-serif; }
+  .btn-rent {
+    width: 100%; background: var(--card2); color: var(--text);
+    border: 1px solid var(--border); padding: 0.5rem;
+    border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s;
+  }
+  .btn-rent:hover { background: rgba(74,222,128,0.12); border-color: rgba(0,212,170,0.3); color: var(--teal); }
+ 
+  /* ── MARKET ── */
+  .market-list { margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem; }
+  .market-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.1rem 1.4rem;
+    display: flex; align-items: center; gap: 1.25rem;
+    transition: border-color 0.2s;
+  }
+  .market-item:hover { border-color: rgba(255,255,255,0.12); }
+  .market-icon {
+    width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+  }
+  .market-info { flex: 1; }
+  .market-item-name { font-weight: 600; font-size: 0.95rem; }
+  .market-item-req { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+  .market-meta { text-align: right; flex-shrink: 0; }
+  .market-urgency { font-size: 0.72rem; font-weight: 700; }
+  .market-by { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
+  .btn-help {
+    background: rgba(255,255,255,0.08); color: #fff;
+    border: 1px solid rgba(255,255,255,0.15); padding: 0.4rem 0.9rem;
+    border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 6px;
+    display: inline-block; transition: background 0.2s;
+  }
+  .btn-help:hover { background: rgba(255,255,255,0.15); }
+ 
+  /* ── SAFETY ── */
+  .safety-wrapper {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+    align-items: center; margin-top: 3rem;
+  }
+  .safety-features { display: flex; flex-direction: column; gap: 1rem; }
+  .safety-feat {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.1rem 1.25rem;
+  }
+  .safety-feat-icon {
+    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  }
+  .safety-feat-text h4 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
+  .safety-feat-text p { font-size: 0.83rem; color: var(--muted); line-height: 1.55; }
+  .sos-phone {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 2rem; text-align: center;
+  }
+  .sos-circle {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: rgba(255,71,87,0.12); border: 2px solid rgba(255,71,87,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; margin: 0 auto 1.25rem;
+    animation: pulse 2.5s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,71,87,0.3); }
+    50% { box-shadow: 0 0 0 16px rgba(255,71,87,0); }
+  }
+  .sos-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--red); margin-bottom: 0.5rem; }
+  .sos-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .sos-btn {
+    background: var(--red); color: #fff; border: none;
+    width: 100%; padding: 0.85rem; border-radius: 12px;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; letter-spacing: 0.04em;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .sos-btn:hover { opacity: 0.9; transform: scale(0.99); }
+  .sos-share {
+    background: transparent; color: #fff;
+    border: 1px solid rgba(255,255,255,0.2); width: 100%;
+    padding: 0.7rem; border-radius: 12px; font-size: 0.875rem;
+    font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    margin-top: 0.6rem; transition: background 0.2s;
+  }
+  .sos-share:hover { background: rgba(255,255,255,0.07); }
+ 
+  /* ── LOGIN SECTION ── */
+  .login-section {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+    align-items: center;
+  }
+  .login-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 2rem;
+  }
+  .login-card h3 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .login-card .sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.75rem; }
+  .email-row { position: relative; margin-bottom: 0.75rem; }
+  .email-input {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); padding: 0.75rem 1rem; border-radius: 12px;
+    font-size: 0.9rem; font-family: 'DM Sans', sans-serif; outline: none;
+  }
+  .email-suffix {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 0.82rem; color: var(--accent); font-weight: 600;
+    background: rgba(74,222,128,0.1); padding: 2px 8px; border-radius: 6px;
+  }
+  .verify-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(74,222,128,0.1); border: 1px solid rgba(0,212,170,0.25);
+    color: var(--accent); font-size: 0.78rem; font-weight: 600;
+    padding: 0.4rem 0.9rem; border-radius: 8px; margin-bottom: 1rem;
+  }
+  .benefits { display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
+  .benefit {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; color: var(--muted);
+  }
+  .benefit::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+  .btn-verify {
+    width: 100%; background: linear-gradient(135deg, #22C55E, #16A34A);
+    color: #fff; border: none; padding: 0.8rem; border-radius: 12px;
+    font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 0.5rem;
+    font-family: 'DM Sans', sans-serif; transition: opacity 0.2s, transform 0.2s;
+  }
+  .btn-verify:hover { opacity: 0.9; transform: translateY(-1px); }
+  .trust-row {
+    display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;
+  }
+  .trust-chip {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 0.75rem; color: var(--muted);
+  }
+ 
+  /* ── NOTIF SECTION ── */
+  .notif-panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.5rem; margin-top: 0;
+  }
+  .notif-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+  .notif-header h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; }
+  .notif-live {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 0.72rem; color: var(--accent);
+  }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 1s ease infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .route-sub {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg3); border-radius: 10px; padding: 0.75rem 1rem;
+    margin-bottom: 0.6rem;
+  }
+  .route-sub-name { font-size: 0.9rem; font-weight: 500; }
+  .toggle {
+    width: 36px; height: 20px; border-radius: 20px; cursor: pointer;
+    position: relative; transition: background 0.2s;
+  }
+  .toggle.on { background: var(--accent); }
+  .toggle.off { background: var(--card2); border: 1px solid var(--border); }
+  .toggle-knob {
+    position: absolute; top: 2px; width: 16px; height: 16px;
+    border-radius: 50%; background: #fff; transition: left 0.2s;
+  }
+  .toggle.on .toggle-knob { left: 18px; }
+  .toggle.off .toggle-knob { left: 2px; }
+  .notif-item {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.15);
+    border-radius: 10px; padding: 0.75rem; margin-top: 0.75rem;
+    font-size: 0.83rem;
+  }
+  .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .notif-text { flex: 1; }
+  .notif-time { font-size: 0.72rem; color: var(--muted); }
+ 
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bg2); border-top: 1px solid var(--border);
+    text-align: center; padding: 2.5rem 1rem;
+    color: var(--muted); font-size: 0.85rem;
+  }
+  footer strong { color: var(--accent); }
+ 
+  /* ── ANIM ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+ 
+  /* ── DIVIDER ── */
+  .full-bg { background: var(--bg2); }
+  .section-divider { height: 1px; background: var(--border); max-width: 1200px; margin: 0 auto; }
+ 
+  @media (max-width: 768px) {
+    nav { padding: 1rem; }
+    .nav-links { display: none; }
+    .hero-stats { gap: 1.5rem; }
+    .ride-demo, .safety-wrapper, .login-section { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+ 
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Campus<span>Ride</span></div>
+  <ul class="nav-links">
+    <li><a href="#rides">Rides</a></li>
+    <li><a href="#rental">Rentals</a></li>
+    <li><a href="#market">Market</a></li>
+    <li><a href="#safety">Safety</a></li>
+    <li><a href="#login">Login</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location.href='get-access.html'">Get Access</button>
+</nav>
+ 
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-badge">🎓 NIT Arunachal Pradesh — Students Only</div>
+  <h1>The Campus <em>Mobility</em><br>Platform</h1>
+  <p class="hero-sub">Share rides, rent vehicles, and request essentials — exclusively for NIT AP students. Safe, verified, community-powered.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="window.location.href='get-access.html'">Join with College Email</button>
+    <button class="btn-secondary" onclick="document.getElementById('rides').scrollIntoView({behavior:'smooth'})">Browse Rides</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">200<span>+</span></div><div class="stat-label">Students</div></div>
+    <div class="stat"><div class="stat-num">50<span>+</span></div><div class="stat-label">Daily Rides</div></div>
+    <div class="stat"><div class="stat-num">100<span>%</span></div><div class="stat-label">Verified</div></div>
+  </div>
+</div>
+ 
+<!-- FEATURES -->
+<section>
+  <div class="section-tag">Platform Features</div>
+  <div class="section-title">Everything you need<br>to move around campus</div>
+  <p class="section-sub">Built for NIT AP students, by students — a complete mobility ecosystem within the campus community.</p>
+  <div class="features-grid">
+    <div class="feat-card" style="--card-accent: var(--accent)">
+      <div class="feat-icon" style="background: rgba(34,197,94,0.12); color: var(--accent)">🚗</div>
+      <h3>Ride Alert System</h3>
+      <p>Post your trip and let fellow students hop on. Travel together from NIT AP to Itanagar, Naharlagun, and beyond.</p>
+    </div>
+    <div class="feat-card" style="--card-accent: var(--accent)">
+      <div class="feat-icon" style="background: rgba(74,222,128,0.12); color: var(--teal)">🛵</div>
+      <h3>Vehicle Rentals</h3>
+      <p>Rent scooties, bikes, and cycles from fellow students. Quick, affordable, and no paperwork needed.</p>
+    </div>
+    <div class="feat-card" style="--card-accent: var(--accent)">
+      <div class="feat-icon" style="background: rgba(255,255,255,0.08); color: var(--text)">🛍</div>
+      <h3>Market Requests</h3>
+      <p>Need medicine, stationery, or groceries? Post a request and get help from students heading to the market.</p>
+    </div>
+    <div class="feat-card" style="--card-accent: var(--accent)">
+      <div class="feat-icon" style="background: rgba(74,222,128,0.12); color: var(--teal)">🔐</div>
+      <h3>Verified Login</h3>
+      <p>College email authentication ensures only NIT AP students can access the platform. Zero outsiders.</p>
+    </div>
+    <div class="feat-card" style="--card-accent: var(--accent)">
+      <div class="feat-icon" style="background: rgba(134,239,172,0.12); color: var(--accent2)">🔔</div>
+      <h3>Route Notifications</h3>
+      <p>Subscribe to your frequent routes and get instant alerts whenever a ride is posted for that route.</p>
+    </div>
+    <div class="feat-card" style="--card-accent: var(--accent)">
+      <div class="feat-icon" style="background: rgba(255,71,87,0.12); color: var(--red)">🚨</div>
+      <h3>Emergency Safety</h3>
+      <p>In-ride SOS button to share your location with friends and send emergency alerts in seconds.</p>
+    </div>
+  </div>
+</section>
+ 
+<!-- RIDE SECTION -->
+<div class="full-bg">
+<section id="rides">
+  <div class="section-tag">Ride Alert System</div>
+  <div class="section-title">Post a ride.<br>Fill the seats.</div>
+  <p class="section-sub">Create a ride post in 30 seconds and let your campus community know there's a seat available.</p>
+  <div class="ride-demo">
+    <!-- Live ride card -->
+    <div>
+      <p style="font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem;">Available now</p>
+      <div class="ride-card" style="margin-bottom: 1rem;">
+        <div class="ride-card-header">
+          <span class="ride-card-title">Ride to Itanagar</span>
+          <span class="badge badge-green">2 seats left</span>
+        </div>
+        <div class="ride-route">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="route-dot"></div>
+            <div class="route-line"></div>
+            <div class="route-dot dest"></div>
+          </div>
+          <div class="route-col">
+            <div style="margin-bottom: 14px;">
+              <div class="route-place">NIT Arunachal Pradesh</div>
+              <div class="route-time">Departing 3:30 PM</div>
+            </div>
+            <div>
+              <div class="route-place">Itanagar City</div>
+              <div class="route-time">~45 min</div>
+            </div>
+          </div>
+        </div>
+        <div class="ride-meta">
+          <div class="meta-item">
+            <div class="meta-label">Vehicle</div>
+            <div class="meta-val">🚗 Car</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Posted by</div>
+            <div class="meta-val">Raju M.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Seats</div>
+            <div class="seats-bar">
+              <div class="seat"></div>
+              <div class="seat"></div>
+              <div class="seat taken"></div>
+              <div class="seat taken"></div>
+            </div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Cost share</div>
+            <div class="meta-val">₹50/seat</div>
+          </div>
+        </div>
+        <div class="ride-actions">
+          <button class="btn-join" onclick="window.location.href='join-ride.html'">Join Ride</button>
+          <button class="btn-sos">🚨 SOS</button>
+        </div>
+      </div>
+ 
+      <div class="ride-card">
+        <div class="ride-card-header">
+          <span class="ride-card-title">Scooty to Naharlagun</span>
+          <span class="badge badge-orange">1 seat</span>
+        </div>
+        <div class="ride-route">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="route-dot"></div>
+            <div class="route-line"></div>
+            <div class="route-dot dest"></div>
+          </div>
+          <div class="route-col">
+            <div style="margin-bottom: 14px;">
+              <div class="route-place">NIT Arunachal Pradesh</div>
+              <div class="route-time">Departing 5:00 PM</div>
+            </div>
+            <div>
+              <div class="route-place">Naharlagun</div>
+              <div class="route-time">~30 min</div>
+            </div>
+          </div>
+        </div>
+        <div class="ride-meta">
+          <div class="meta-item"><div class="meta-label">Vehicle</div><div class="meta-val">🛵 Scooty</div></div>
+          <div class="meta-item"><div class="meta-label">Posted by</div><div class="meta-val">Priya T.</div></div>
+        </div>
+        <div class="ride-actions">
+          <button class="btn-join" onclick="window.location.href='join-ride.html'">Join Ride</button>
+          <button class="btn-sos">🚨 SOS</button>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Post form -->
+    <div class="form-panel">
+      <h3>Post a New Ride</h3>
+      <div class="form-group">
+        <label class="form-label">From</label>
+        <input class="form-input" type="text" value="NIT Arunachal Pradesh" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">To</label>
+        <input class="form-input" type="text" placeholder="Destination...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input class="form-input" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time</label>
+          <input class="form-input" type="time" value="15:30">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Vehicle</label>
+        <div class="vehicle-options">
+          <button class="veh-btn active" onclick="selectVeh(this)">🚗 Car</button>
+          <button class="veh-btn" onclick="selectVeh(this)">🛵 Scooty</button>
+          <button class="veh-btn" onclick="selectVeh(this)">🏍 Bike</button>
+          <button class="veh-btn" onclick="selectVeh(this)">🚲 Cycle</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Seats Available</label>
+          <input class="form-input" type="number" min="1" max="6" value="2">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cost share (₹)</label>
+          <input class="form-input" type="number" placeholder="Optional">
+        </div>
+      </div>
+      <button class="btn-post">Post Ride →</button>
+    </div>
+  </div>
+</section>
+</div>
+ 
+<!-- RENTAL -->
+<section id="rental">
+  <div class="section-tag">Vehicle Rentals</div>
+  <div class="section-title">Rent from your peers.<br>Move freely.</div>
+  <p class="section-sub">Students can list their vehicles for rent and earn while they're not using them. Browse by availability.</p>
+  <div class="rental-grid">
+    <div class="rental-card">
+      <div class="rental-img rental-img-scooty">🛵<div class="avail-dot"></div></div>
+      <div class="rental-body">
+        <div class="rental-name">Honda Activa</div>
+        <div class="rental-owner">by Ankit S. · 2nd year</div>
+        <div class="rental-price">₹80 <small>/ half day</small></div>
+        <button class="btn-rent" onclick="window.location.href='contact-owner.html'">Contact Owner</button>
+      </div>
+    </div>
+    <div class="rental-card">
+      <div class="rental-img rental-img-bike">🏍<div class="avail-dot"></div></div>
+      <div class="rental-body">
+        <div class="rental-name">Royal Enfield 350</div>
+        <div class="rental-owner">by Rahul K. · 4th year</div>
+        <div class="rental-price">₹150 <small>/ half day</small></div>
+        <button class="btn-rent" onclick="window.location.href='contact-owner.html'">Contact Owner</button>
+      </div>
+    </div>
+    <div class="rental-card">
+      <div class="rental-img rental-img-cycle">🚲<div class="avail-dot"></div></div>
+      <div class="rental-body">
+        <div class="rental-name">Mountain Cycle</div>
+        <div class="rental-owner">by Meera L. · 3rd year</div>
+        <div class="rental-price">₹30 <small>/ half day</small></div>
+        <button class="btn-rent" onclick="window.location.href='contact-owner.html'">Contact Owner</button>
+      </div>
+    </div>
+    <div class="rental-card">
+      <div class="rental-img rental-img-scooty" style="background:linear-gradient(135deg,#1A2235,#352A1A)">🛵<div class="avail-dot" style="background:#FF6B35;box-shadow:0 0 0 3px rgba(34,197,94,0.2)"></div></div>
+      <div class="rental-body">
+        <div class="rental-name">TVS Jupiter</div>
+        <div class="rental-owner">by Suresh P. · 1st year</div>
+        <div class="rental-price">₹70 <small>/ half day</small></div>
+        <button class="btn-rent" style="color:var(--muted);cursor:default">Unavailable today</button>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- MARKET -->
+<div class="full-bg">
+<section id="market">
+  <div class="section-tag">Campus Market</div>
+  <div class="section-title">Need something?<br>Ask the community.</div>
+  <p class="section-sub">Post requests for items — medicine, stationery, food — and get help from students already heading out.</p>
+  <div class="market-list">
+    <div class="market-item">
+      <div class="market-icon" style="background:rgba(255,71,87,0.12)">💊</div>
+      <div class="market-info">
+        <div class="market-item-name">Paracetamol 500mg (strip of 10)</div>
+        <div class="market-item-req">Needed urgently · Any pharmacy in Naharlagun</div>
+      </div>
+      <div class="market-meta">
+        <div class="market-urgency" style="color:#FF6B6B">🔴 Urgent</div>
+        <div class="market-by">by Tenzin W.</div>
+        <button class="btn-help">I can help</button>
+      </div>
+    </div>
+    <div class="market-item">
+      <div class="market-icon" style="background:rgba(34,197,94,0.12)">📓</div>
+      <div class="market-info">
+        <div class="market-item-name">A4 Spiral Notebook × 2</div>
+        <div class="market-item-req">Any stationery shop · will pay back</div>
+      </div>
+      <div class="market-meta">
+        <div class="market-urgency" style="color:var(--accent2)">🟡 Normal</div>
+        <div class="market-by">by Diksha R.</div>
+        <button class="btn-help">I can help</button>
+      </div>
+    </div>
+    <div class="market-item">
+      <div class="market-icon" style="background:rgba(74,222,128,0.12)">🥙</div>
+      <div class="market-info">
+        <div class="market-item-name">Maggi × 4 packs + Bread</div>
+        <div class="market-item-req">Grocery store near Itanagar market</div>
+      </div>
+      <div class="market-meta">
+        <div class="market-urgency" style="color:var(--accent)">🟢 Low</div>
+        <div class="market-by">by Amar J.</div>
+        <button class="btn-help">I can help</button>
+      </div>
+    </div>
+    <div class="market-item">
+      <div class="market-icon" style="background:rgba(255,255,255,0.08)">🖨</div>
+      <div class="market-info">
+        <div class="market-item-name">Print 15 pages (A4, B&W)</div>
+        <div class="market-item-req">Any print shop · assignment due tomorrow</div>
+      </div>
+      <div class="market-meta">
+        <div class="market-urgency" style="color:#FF6B6B">🔴 Urgent</div>
+        <div class="market-by">by Pooja M.</div>
+        <button class="btn-help">I can help</button>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+ 
+<!-- SAFETY -->
+<section id="safety">
+  <div class="section-tag">Emergency Safety</div>
+  <div class="section-title">Every ride, every student,<br>protected.</div>
+  <p class="section-sub">Built-in safety features ensure you're never alone. Share your ride, alert your people, arrive safe.</p>
+  <div class="safety-wrapper">
+    <div class="safety-features">
+      <div class="safety-feat">
+        <div class="safety-feat-icon" style="background:rgba(255,71,87,0.12)">🚨</div>
+        <div class="safety-feat-text">
+          <h4>One-tap SOS Alert</h4>
+          <p>Press and hold the SOS button to instantly notify your emergency contacts with your live ride details and location.</p>
+        </div>
+      </div>
+      <div class="safety-feat">
+        <div class="safety-feat-icon" style="background:rgba(255,255,255,0.08)">📍</div>
+        <div class="safety-feat-text">
+          <h4>Share Ride Details</h4>
+          <p>Send your current ride info — driver, route, time — to friends or family with one tap before you board.</p>
+        </div>
+      </div>
+      <div class="safety-feat">
+        <div class="safety-feat-icon" style="background:rgba(74,222,128,0.12)">✅</div>
+        <div class="safety-feat-text">
+          <h4>Verified Riders Only</h4>
+          <p>Every person on the platform is a verified NIT AP student. No strangers, no anonymous accounts.</p>
+        </div>
+      </div>
+      <div class="safety-feat">
+        <div class="safety-feat-icon" style="background:rgba(255,179,71,0.12)">👁</div>
+        <div class="safety-feat-text">
+          <h4>Ride History & Logs</h4>
+          <p>All rides are logged with timestamps. If anything goes wrong, there's always a verifiable record.</p>
+        </div>
+      </div>
+    </div>
+    <div class="sos-phone">
+      <div class="sos-circle">🚨</div>
+      <div class="sos-title">Emergency SOS</div>
+      <div class="sos-sub">Hold for 3 seconds to send an alert to your emergency contacts with your current ride info.</div>
+      <button class="sos-btn" onmousedown="startSOS(this)" onmouseup="endSOS(this)" ontouchstart="startSOS(this)" ontouchend="endSOS(this)">
+        Hold to Activate SOS
+      </button>
+      <button class="sos-share">📤 Share Ride Details</button>
+      <div style="margin-top:1rem;font-size:0.75rem;color:var(--muted)">
+        Active contacts: Priya (+91 98XXX), Campus Security
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- LOGIN + NOTIFICATIONS -->
+<div class="full-bg">
+<section id="login" style="padding-bottom:2rem">
+  <div class="section-tag">Secure Access</div>
+  <div class="section-title">Exclusively for<br>NIT AP students</div>
+  <p class="section-sub" style="margin-bottom:2.5rem">Verify your identity with your institute email. No outsiders, no exceptions.</p>
+  <div class="login-section">
+    <div class="login-card">
+      <h3>Student Verification</h3>
+      <p class="sub">Use your NIT AP college email to get started</p>
+      <div class="verify-chip">🔐 Secure college email verification</div>
+      <div class="email-row">
+        <input class="email-input" type="text" placeholder="yourname" id="emailInput">
+        <span class="email-suffix">@nitap.ac.in</span>
+      </div>
+      <div class="benefits">
+        <div class="benefit">Trusted campus-only community</div>
+        <div class="benefit">No outsiders or unverified users</div>
+        <div class="benefit">Your data never leaves the platform</div>
+        <div class="benefit">One account per student, always</div>
+      </div>
+      <button class="btn-verify" ">Verify & Join CampusRide →</button>
+      <div class="trust-row">
+        <div class="trust-chip">🔒 256-bit encrypted</div>
+        <div class="trust-chip">📧 OTP verified</div>
+        <div class="trust-chip">🎓 College ID check</div>
+      </div>
+    </div>
+ 
+    <!-- Notifications panel -->
+    <div>
+      <p style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem">Ride Notifications</p>
+      <div class="notif-panel">
+        <div class="notif-header">
+          <h3>My Route Subscriptions</h3>
+          <div class="notif-live"><div class="live-dot"></div> Live</div>
+        </div>
+        <div class="route-sub">
+          <span class="route-sub-name">🚗 NIT AP → Itanagar</span>
+          <div class="toggle on" onclick="toggleThis(this)"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="route-sub">
+          <span class="route-sub-name">🚗 NIT AP → Naharlagun</span>
+          <div class="toggle on" onclick="toggleThis(this)"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="route-sub">
+          <span class="route-sub-name">🛵 NIT AP → Nirjuli</span>
+          <div class="toggle off" onclick="toggleThis(this)"><div class="toggle-knob"></div></div>
+        </div>
+ 
+        <p style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin:1rem 0 0.5rem">Recent alerts</p>
+        <div class="notif-item">
+          <div class="notif-dot"></div>
+          <div class="notif-text">New ride: NIT AP → Itanagar at 3:30 PM · 2 seats left</div>
+          <div class="notif-time">2m ago</div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-dot"></div>
+          <div class="notif-text">New ride: NIT AP → Naharlagun at 5:00 PM · 1 seat</div>
+          <div class="notif-time">18m ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+ 
+<!-- FOOTER -->
+<footer>
+  <p style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:0.5rem">Campus<strong>Ride</strong></p>
+  <p>Built for NIT Arunachal Pradesh students · Safe · Verified · Community-powered</p>
+  <p style="margin-top:0.5rem;font-size:0.75rem">© 2025 CampusRide · National Institute of Technology Arunachal Pradesh</p>
+</footer>
+ 
+<script>
+  function selectVeh(el) {
+    document.querySelectorAll('.veh-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function toggleThis(el) {
+    if (el.classList.contains('on')) {
+      el.classList.remove('on'); el.classList.add('off');
+    } else {
+      el.classList.remove('off'); el.classList.add('on');
+    }
+  }
+  let sosTimer;
+  function startSOS(btn) {
+    btn.style.background = '#cc2233';
+    btn.textContent = 'Hold... sending SOS';
+    sosTimer = setTimeout(() => {
+      btn.style.background = '#ff4757';
+      btn.textContent = '🚨 SOS SENT — Help is coming!';
+      setTimeout(() => {
+        btn.style.background = '';
+        btn.textContent = 'Hold to Activate SOS';
+      }, 3000);
+    }, 3000);
+  }
+  function endSOS(btn) {
+    clearTimeout(sosTimer);
+    if (btn.textContent.includes('Hold...')) {
+      btn.style.background = '';
+      btn.textContent = 'Hold to Activate SOS';
+    }
+  }
+</script>
+</body>
+</html>

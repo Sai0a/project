@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Access — CampusRide NIT AP</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #050A05;
+    --bg2: #0A120A;
+    --bg3: #0F1F0F;
+    --card: #0D1A0D;
+    --card2: #162416;
+    --accent: #22C55E;
+    --accent2: #4ADE80;
+    --teal: #86EFAC;
+    --blue: #FFFFFF;
+    --red: #FF4757;
+    --text: #F0FFF0;
+    --muted: #6B8F6B;
+    --border: rgba(255,255,255,0.07);
+  }
+  html, body { height: 100%; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+  }
+ 
+  /* LEFT PANEL */
+  .left-panel {
+    width: 52%;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .left-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 20% 20%, rgba(34,197,94,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 80%, rgba(0,212,170,0.08) 0%, transparent 60%);
+  }
+  .left-grid {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 40%, transparent 100%);
+  }
+  .left-content { position: relative; z-index: 1; }
+  .brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem; font-weight: 800;
+    margin-bottom: 3rem; color: var(--text);
+  }
+  .brand span { color: var(--accent); }
+  .left-heading {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 800; line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .left-heading em { font-style: normal; color: var(--accent); }
+  .left-sub {
+    font-size: 1rem; color: var(--muted); line-height: 1.7;
+    max-width: 380px; margin-bottom: 2.5rem;
+  }
+  .feature-list { display: flex; flex-direction: column; gap: 1rem; }
+  .feat-row {
+    display: flex; align-items: center; gap: 14px;
+    opacity: 0; transform: translateX(-20px);
+    animation: slideIn 0.5s ease forwards;
+  }
+  .feat-row:nth-child(1) { animation-delay: 0.1s; }
+  .feat-row:nth-child(2) { animation-delay: 0.2s; }
+  .feat-row:nth-child(3) { animation-delay: 0.3s; }
+  .feat-row:nth-child(4) { animation-delay: 0.4s; }
+  .feat-row:nth-child(5) { animation-delay: 0.5s; }
+  .feat-ico {
+    width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  }
+  .feat-row-text h4 { font-weight: 600; font-size: 0.9rem; }
+  .feat-row-text p { font-size: 0.8rem; color: var(--muted); }
+  .testimonial {
+    margin-top: 3rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.25rem 1.4rem;
+    opacity: 0; animation: slideIn 0.5s 0.6s ease forwards;
+  }
+  .test-quote { font-size: 0.9rem; color: var(--muted); line-height: 1.65; font-style: italic; }
+  .test-author {
+    display: flex; align-items: center; gap: 10px; margin-top: 1rem;
+  }
+  .test-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; color: #fff;
+  }
+  .test-name { font-size: 0.82rem; font-weight: 600; }
+  .test-role { font-size: 0.75rem; color: var(--muted); }
+ 
+  /* RIGHT PANEL */
+  .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 2.5rem;
+  }
+  .form-box {
+    width: 100%; max-width: 420px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .form-box h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem; font-weight: 800;
+    margin-bottom: 0.35rem;
+  }
+  .form-box .sub {
+    font-size: 0.875rem; color: var(--muted); margin-bottom: 2rem;
+  }
+ 
+  .tabs {
+    display: flex; gap: 0; background: var(--bg3);
+    border-radius: 10px; padding: 4px; margin-bottom: 1.75rem;
+  }
+  .tab {
+    flex: 1; padding: 0.55rem; border-radius: 8px; border: none;
+    background: transparent; color: var(--muted); font-size: 0.875rem;
+    font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .tab.active {
+    background: var(--card2); color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+ 
+  .form-group { margin-bottom: 1rem; }
+  .form-label {
+    display: block; font-size: 0.78rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); padding: 0.7rem 1rem; border-radius: 11px;
+    font-size: 0.9rem; font-family: 'DM Sans', sans-serif; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input:focus {
+    border-color: rgba(34,197,94,0.5);
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.08);
+  }
+  .form-input::placeholder { color: var(--muted); }
+  .email-wrap { position: relative; }
+  .email-domain {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 0.82rem; color: var(--teal); font-weight: 600;
+    background: rgba(74,222,128,0.1); padding: 2px 9px; border-radius: 6px;
+    pointer-events: none;
+  }
+  .email-wrap .form-input { padding-right: 130px; }
+ 
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+ 
+  .divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 1.25rem 0; color: var(--muted); font-size: 0.78rem;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+ 
+  .social-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem; }
+  .social-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text);
+    padding: 0.6rem; border-radius: 10px; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .social-btn:hover { background: var(--card2); border-color: rgba(255,255,255,0.12); }
+ 
+  .btn-main {
+    width: 100%; background: linear-gradient(135deg, var(--accent) 0%, #16A34A 100%);
+    color: #fff; border: none; padding: 0.85rem; border-radius: 12px;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; letter-spacing: 0.01em;
+    transition: transform 0.2s, box-shadow 0.2s; margin-top: 0.25rem;
+  }
+  .btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(34,197,94,0.4); }
+  .btn-main:active { transform: translateY(0); }
+ 
+  .agree {
+    font-size: 0.75rem; color: var(--muted); text-align: center; margin-top: 0.75rem;
+  }
+  .agree a { color: var(--accent); text-decoration: none; }
+ 
+  .switch-link {
+    text-align: center; margin-top: 1.5rem;
+    font-size: 0.85rem; color: var(--muted);
+  }
+  .switch-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
+ 
+  /* Login panel (hidden by default) */
+  #login-form { display: none; }
+ 
+  @keyframes slideIn {
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+ 
+  @media (max-width: 768px) {
+    body { flex-direction: column; }
+    .left-panel { width: 100%; padding: 2rem 1.5rem; }
+    .testimonial { display: none; }
+    .right-panel { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+ 
+<!-- LEFT -->
+<div class="left-panel">
+  <div class="left-bg"></div>
+  <div class="left-grid"></div>
+  <div class="left-content">
+    <div class="brand">Campus<span>Ride</span></div>
+    <h2 class="left-heading">Your campus.<br>Your <em>community.</em></h2>
+    <p class="left-sub">Join NIT AP's student mobility platform. Share rides, rent vehicles, and get things from the market — all within your verified campus network.</p>
+ 
+    <div class="feature-list">
+      <div class="feat-row">
+        <div class="feat-ico" style="background:rgba(34,197,94,0.12)">🚗</div>
+        <div class="feat-row-text">
+          <h4>Shared Rides</h4>
+          <p>Post or join rides to Itanagar, Naharlagun & beyond</p>
+        </div>
+      </div>
+      <div class="feat-row">
+        <div class="feat-ico" style="background:rgba(74,222,128,0.12)">🛵</div>
+        <div class="feat-row-text">
+          <h4>Vehicle Rentals</h4>
+          <p>Rent scooties, bikes & cycles from fellow students</p>
+        </div>
+      </div>
+      <div class="feat-row">
+        <div class="feat-ico" style="background:rgba(255,255,255,0.08)">🛍</div>
+        <div class="feat-row-text">
+          <h4>Market Requests</h4>
+          <p>Get medicine, stationery and essentials delivered</p>
+        </div>
+      </div>
+      <div class="feat-row">
+        <div class="feat-ico" style="background:rgba(255,71,87,0.12)">🚨</div>
+        <div class="feat-row-text">
+          <h4>Emergency SOS</h4>
+          <p>Built-in safety features for every ride</p>
+        </div>
+      </div>
+      <div class="feat-row">
+        <div class="feat-ico" style="background:rgba(255,179,71,0.12)">🔔</div>
+        <div class="feat-row-text">
+          <h4>Route Notifications</h4>
+          <p>Get alerted when rides on your routes are posted</p>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="testimonial">
+      <p class="test-quote">"CampusRide completely changed how I travel. I saved ₹2000 last month just by sharing rides to Itanagar with batchmates."</p>
+      <div class="test-author">
+        <div class="test-avatar">RK</div>
+        <div>
+          <div class="test-name">Rahul Kumar</div>
+          <div class="test-role">3rd Year CSE, NIT AP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<!-- RIGHT -->
+<div class="right-panel">
+  <div class="form-box">
+    <h2>Get Access</h2>
+    <p class="sub">Create your account or sign in to continue</p>
+ 
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('signup', this)">Create Account</button>
+      <button class="tab" onclick="showTab('login', this)">Sign In</button>
+    </div>
+ 
+    <!-- SIGNUP FORM -->
+    <div id="signup-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-input" type="text" placeholder="Rahul">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input class="form-input" type="text" placeholder="Kumar">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">College Email</label>
+        <div class="email-wrap">
+          <input class="form-input" type="text" placeholder="rollno or name" id="emailField">
+          <span class="email-domain">@nitap.ac.in</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Roll Number</label>
+        <input class="form-input" type="text" placeholder="e.g. 22BTCS001">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Department & Year</label>
+        <div class="form-row" style="margin-bottom:0">
+          <select class="form-input" style="cursor:pointer">
+            <option value="" disabled selected>Department</option>
+            <option>Computer Science</option>
+            <option>Electronics</option>
+            <option>Mechanical</option>
+            <option>Civil</option>
+            <option>Electrical</option>
+          </select>
+          <select class="form-input" style="cursor:pointer">
+            <option value="" disabled selected>Year</option>
+            <option>1st Year</option>
+            <option>2nd Year</option>
+            <option>3rd Year</option>
+            <option>4th Year</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" placeholder="Min. 8 characters">
+      </div>
+ 
+      <button class="btn-main" onclick="goToVerify()">Continue to Verification →</button>
+      <p class="agree">By continuing, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>. Only NIT AP emails are accepted.</p>
+    </div>
+ 
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <div class="form-group">
+        <label class="form-label">College Email</label>
+        <div class="email-wrap">
+          <input class="form-input" type="text" placeholder="rollno or name">
+          <span class="email-domain">@nitap.ac.in</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" placeholder="Your password">
+      </div>
+      <div style="text-align:right;margin-bottom:1rem">
+        <a href="#" style="font-size:0.8rem;color:var(--accent);text-decoration:none">Forgot password?</a>
+      </div>
+      <button class="btn-main">Sign In to CampusRide →</button>
+    </div>
+ 
+    <div class="switch-link" id="switch-text">
+      Already have an account? <a href="#" onclick="showTab('login', document.querySelectorAll('.tab')[1]); return false;">Sign in</a>
+    </div>
+  </div>
+</div>
+ 
+<script>
+  function showTab(tab, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    if (tab === 'signup') {
+      document.getElementById('signup-form').style.display = 'block';
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('switch-text').innerHTML = 'Already have an account? <a href="#" onclick="showTab(\'login\', document.querySelectorAll(\'.tab\')[1]); return false;">Sign in</a>';
+    } else {
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('switch-text').innerHTML = 'New here? <a href="#" onclick="showTab(\'signup\', document.querySelectorAll(\'.tab\')[0]); return false;">Create account</a>';
+    }
+  }
+  function goToVerify() {
+    window.location.href = 'verify-join.html';
+  }
+</script>
+</body>
+</html>
+ 
