@@ -9,13 +9,11 @@ public:
             }
             if(s.empty()){
                 mp[nums2[i]]=-1;
-
             }
             else{
                 mp[nums2[i]]=s.top();
             }
             s.push(nums2[i]);
-
         }
         vector<int>ans;
         for(int j=0;j<nums1.size();j++){
