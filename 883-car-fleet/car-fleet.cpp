@@ -1,29 +1,22 @@
 class Solution {
 public:
-    int carFleet(int target, vector<int>& position, vector<int>& speed) {
-        int n = position.size();
-        vector<pair<int,double>> cars;
-
-        for(int i = 0; i < n; i++) {
-            double time = (double)(target - position[i]) / speed[i];
-            cars.push_back({position[i], time});
+    int carFleet(int target, vector<int>& p, vector<int>& s) {
+        int n=p.size();
+        vector<pair<int,double>>ans;
+        for(int i=0;i<n;i++){
+            double time=(double)(target-p[i])/s[i];
+            ans.push_back({p[i],time});
         }
-
-        // Sort by position descending
-        sort(cars.rbegin(), cars.rend());
-
-        int fleets = 0;
-        double maxtime = 0.0;
-
-        for(auto &car : cars) {
-            double time = car.second;
-            if(time > maxtime) {   // new fleet
-                fleets++;
-                maxtime = time;
+        sort(ans.rbegin(),ans.rend());
+        int fleet=0;
+        double maxtime=0.0;
+        for(auto &u:ans){
+            double time=u.second;
+            if(time>maxtime){
+                fleet++;
+                maxtime=time;
             }
-            // else: car joins the fleet ahead
         }
-
-        return fleets;
+        return fleet;
     }
 };
