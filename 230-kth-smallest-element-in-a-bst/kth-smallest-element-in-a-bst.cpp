@@ -11,35 +11,17 @@
  */
 class Solution {
 public:
-    int prevorder=0;
+    void inorder(TreeNode* root,vector<int>&ans){
+        if(root==NULL)return;
+
+        inorder(root->left,ans);
+        ans.push_back(root->val);
+        inorder(root->right,ans);
+    }
     int kthSmallest(TreeNode* root, int k) {
-        if(root==NULL)return -1;
+        vector<int>ans;
+        inorder(root,ans);
 
-        //left subtree
-
-        if(root->left){
-            int leftans=kthSmallest(root->left,k);
-
-            if(leftans!=-1){
-                return leftans;
-            }
-        }
-        //root level
-
-        if(prevorder+1==k){
-            return root->val;
-        }
-        prevorder++;
-
-        //right subtree 
-
-        if(root->right){
-            int rightans=kthSmallest(root->right,k);
-
-            if(rightans!=-1){
-                return rightans;
-            }
-        }
-        return -1;
+        return ans[k-1];
     }
 };
