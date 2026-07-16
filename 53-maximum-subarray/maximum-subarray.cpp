@@ -4,10 +4,10 @@ public:
         int n=nums.size();
         int currentsum=nums[0];
         int maxsum=nums[0];
-
         for(int i=1;i<n;i++){
             currentsum=max(nums[i],currentsum+nums[i]);
             maxsum=max(maxsum,currentsum);
+
         }
         return maxsum;
     }
