@@ -5,10 +5,10 @@ impl Solution {
         for ch in s.chars() {
             freq[(ch as u8 - b'a') as usize]+=1;
         }
-        for (i,ch) in s.chars().enumerate() {
+
+        for (i,ch ) in s.chars().enumerate() {
             if freq[(ch as u8 - b'a') as usize]==1 {
                 return i as i32;
-
             }
         }
         -1
