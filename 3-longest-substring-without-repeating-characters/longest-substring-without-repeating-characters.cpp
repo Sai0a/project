@@ -1,10 +1,10 @@
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
-        int n=s.length();
-        int ch[128]={0};
-        int maxlength=0;
+        int n=s.size();
+        int ch[128]={};
         int left=0;
+        int maxlength=0;
         for(int right=0;right<n;right++){
             char rightchar=s[right];
             ch[rightchar]++;
